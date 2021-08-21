@@ -1,0 +1,48 @@
+@import "../node_modules/vue-good-table/src/styles/style.scss";
+
+.vgt-wrap {
+  @apply bg-mariner-100 p-2 rounded-2xl;
+
+  .vgt-inner-wrap {
+    @apply shadow-none;
+  }
+
+  .vgt-table {
+    @apply bg-mariner-light-50 rounded-2xl overflow-hidden border-none;
+
+    .vgt-right-align,
+    .vgt-left-align {
+      @apply text-left border-none;
+    }
+
+    thead {
+      th {
+        background: none;
+        @apply text-water-600 font-semibold bg-mariner-100;
+      }
+    }
+
+    tbody {
+      @apply rounded-2xl overflow-hidden;
+
+      tr:nth-of-type(odd) {
+        @apply bg-mariner-light-100;
+      }
+    }
+  }
+}
+
+.button {
+  @apply text-center bg-mariner-light-200 px-4 py-1 rounded-2xl;
+
+  &:hover {
+    @apply bg-mariner-200;
+  }
+
+  &__primary {
+    @apply bg-mariner-light-600 text-white;
+  }
+  &__danger {
+    @apply bg-red-500 text-white;
+  }
+}
