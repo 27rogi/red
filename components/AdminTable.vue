@@ -52,8 +52,12 @@ export default {
   async fetch() {
     const currentPage = (this.$route.query.page) ? this.$route.query.page : 1;
     const currentLimit = (this.$route.query.limit) ? this.$route.query.limit : 10;
+
+    let extras = "";
+    if(this.$props.extras) extras = `&extras=${this.$props.extras}`;
+
     this.$data.items = (await this.$axios.$get(
-      `http://localhost:3050/v1/diary/${this.$props.item}?sortBy=${this.$props.sort}%3Aasc&page=${currentPage}&limit=${currentLimit}&extras=${this.$props.extras}`,
+      `http://localhost:3050/v1/diary/${this.$props.item}?sortBy=${this.$props.sort}%3Aasc&page=${currentPage}&limit=${currentLimit}${extras}`,
     ))
   },
   watch: {

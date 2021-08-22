@@ -1,14 +1,14 @@
 <template>
   <div class="add">
     <uiLoader v-if="isLoading" />
-    <div v-if="success && success.scheduleId" class="add--message">
+    <div v-if="success && success.replacementId" class="add--message">
       <h6>Успешное добавление!</h6>
-      <p>Расписание успешно добавлено, его номер в системе #{{success.scheduleId}}</p>
+      <p>Замена успешно добавлена, ее номер в системе #{{success.replacementId}}</p>
     </div>
     <span v-if="errors && errors.update" class="field--error">{{errors.update}}</span>
-    <h1>Добавление нового расписания</h1>
+    <h1>Добавление замены</h1>
     <div class="add--field">
-      <p>Учебный предмет <span v-if="errors && errors.subject" class="field--error">{{errors.subject}}</span></p>
+      <p>Заменяющий предмет <span v-if="errors && errors.subject" class="field--error">{{errors.subject}}</span></p>
       <multiselect id="ajaxSubject" v-model="subject.selectedSubject" :searchable="true" :internal-search="false"
         :show-labels="false" :allow-empty="false" label="name" track-by="subjectId" :options="subject.subjects"
         :loading="isLoading" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600"
@@ -19,30 +19,35 @@
       </multiselect>
     </div>
     <div class="add--field">
-      <p>День недели <span v-if="errors && errors.weekDay" class="field--error">{{errors.weekDay}}</span></p>
-      <multiselect id="ajaxWeekDay" v-model="weekDay.selectedWeekDay" :searchable="true" :show-labels="false"
-        :allow-empty="false" :options="weekDay.variants" label="name" track-by="day">
-        <template slot="singleLabel" slot-scope="props">{{ props.option.name }} ({{props.option.day}})</template>
-        <template slot="option" slot-scope="props">{{ props.option.name }} ({{props.option.day}})</template>
-      </multiselect>
-    </div>
-    <div class="add--field">
-      <p>Время начала <span v-if="errors && errors.bell" class="field--error">{{errors.bell}}</span></p>
-      <multiselect id="ajaxBell" v-model="bell.selectedBell" :searchable="true" :internal-search="false"
-        :show-labels="false" :allow-empty="false" label="starts" track-by="bellId" :options="bell.bells"
+      <p>Заменяемый урок <span v-if="errors && errors.schedule" class="field--error">{{errors.schedule}}</span>
+      </p>
+      <multiselect id="ajaxSchedule" v-model="schedule.selectedSchedule" :searchable="true" :internal-search="false"
+        :show-labels="false" :allow-empty="false" label="scheduleId" track-by="scheduleId" :options="schedule.schedules"
         :loading="isLoading" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600"
-        @search-change="findBells" @open="findBells">
-        <template slot="singleLabel" slot-scope="props">Начало в {{ props.option.starts }}
-          (#{{props.option.bellId}})</template>
-        <template slot="option" slot-scope="props">Начало в {{ props.option.starts }}
-          (#{{props.option.bellId}})</template>
+        @search-change="findSchedules" @open="findSchedules">
+        <template slot="singleLabel" slot-scope="props">{{ props.option.subject.name }}</template>
+        <template slot="option" slot-scope="props">{{ props.option.subject.name }} {{days[props.option.weekDay]}} в
+          {{ props.option.bell.starts }}
+          (#{{props.option.scheduleId}})</template>
       </multiselect>
     </div>
     <div class="add--field">
-      <p>Четная неделя? <span v-if="errors && errors.even" class="field--error">{{errors.even}}</span></p>
-      <multiselect id="ajaxEven" v-model="even.isEven" :searchable="true" :show-labels="false" :allow-empty="false"
-        label="name" track-by="name" :options="even.variants">
-      </multiselect>
+      <p>Дата замены <span v-if="errors && errors.date" class="field--error">{{errors.date}}</span></p>
+      <date-picker v-model="date" :lang="{formatLocale: { firstDayOfWeek: 1, }}" value-type="DD/MM/YYYY"
+        format="DD.MM.YYYY" />
+      <span v-if="date">{{$moment(date, 'DD/MM/YYYY').format('DD MMMM YYYY (dddd)')}}</span>
+    </div>
+    <div class="add--field">
+      <p>Заменяющий учитель (не обязательно) <span v-if="errors && errors.teacher"
+          class="field--error">{{errors.teacher}}</span></p>
+      <input id="teacher" v-model="teacher" class="add--input" placeholder="Введите имя заменяющего учителя"
+        type="text" />
+    </div>
+    <div class="add--field">
+      <p>Номер кабинета замены (не обязательно) <span v-if="errors && errors.location"
+          class="field--error">{{errors.location}}</span></p>
+      <input id="location" v-model="location" class="add--input" placeholder="Введите номер кабинета"
+        type="number" />
     </div>
     <button @click="sendData">Сохранить</button>
   </div>
@@ -50,64 +55,38 @@
 
 <script>
   import Multiselect from 'vue-multiselect'
+  import DatePicker from 'vue2-datepicker';
+  import 'vue2-datepicker/locale/ru';
+  import 'vue2-datepicker/index.css';
+
   export default {
     components: {
       Multiselect,
+      DatePicker,
     },
     data() {
       return {
         isLoading: false,
+        replacement: null,
         subject: {
           selectedSubject: null,
           subjects: [],
         },
-        bell: {
-          selectedBell: null,
-          bells: [],
+        schedule: {
+          selectedSchedule: null,
+          schedules: [],
         },
-        weekDay: {
-          selectedWeekDay: null,
-          variants: [{
-              day: 1,
-              name: "понедельник"
-            },
-            {
-              day: 2,
-              name: "вторник"
-            },
-            {
-              day: 3,
-              name: "среда"
-            },
-            {
-              day: 4,
-              name: "четверг"
-            },
-            {
-              day: 5,
-              name: "пятница"
-            },
-            {
-              day: 6,
-              name: "суббота"
-            },
-            {
-              day: 7,
-              name: "воскресенье"
-            },
-          ],
-        },
-        even: {
-          isEven: null,
-          variants: [{
-              name: "Четная неделя",
-              value: true
-            },
-            {
-              name: "Нечетная неделя",
-              value: false
-            },
-          ],
+        date: null,
+        teacher: null,
+        location: null,
+        days: {
+          1: "понедельник",
+          2: "вторник",
+          3: "среда",
+          4: "четверг",
+          5: "пятница",
+          6: "суббота",
+          7: "воскресенье",
         },
         errors: {},
         success: null,
@@ -125,34 +104,41 @@
             this.isLoading = false
           })
       },
-      findBells(query) {
+      findSchedules(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/bells?sortBy=starts%3Aasc&limit=9999`).then(
+        this.$axios.$get(`http://localhost:3050/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacement`).then(
           response => {
-            this.bell.bells = response.results
+            this.schedule.schedules = response.results
             this.isLoading = false
           })
       },
       sendData() {
         this.$set(this, 'errors', {});
-        if (!this.subject.selectedSubject) this.$set(this.errors, 'subject', "Не казан учебный предмет!");
-        if (!this.bell.selectedBell) this.$set(this.errors, 'bell', "Не указано время начала пары!");
-        if (!this.weekDay.selectedWeekDay) this.$set(this.errors, 'weekDay', "Не указан день недели!");
-        if (!this.even.isEven) this.$set(this.errors, 'even', "Не указана четность недели!");
+        if (!this.subject.selectedSubject) this.$set(this.errors, 'subject', "Не казан заменяемый учебный предмет!");
+        if (!this.schedule.selectedSchedule) this.$set(this.errors, 'schedule', "Не указан заменяемый урок!");
+        if (!this.date) this.$set(this.errors, 'date', "Не указана дата замены!");
 
         if (Object.keys(this.errors).length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$post(`http://localhost:3050/v1/diary/schedules`, {
-          subjectId: this.subject.selectedSubject.subjectId,
-          bellId: this.bell.selectedBell.bellId,
-          weekDay: this.weekDay.selectedWeekDay.day,
-          isEven: this.even.isEven.value,
-        }).then((res) => {
-          this.success = res;
-        }).catch(() => {
-          this.success = null;
-          this.$set(this.errors, 'update', "Расписание с такими данными уже есть в системе!");
+
+        const postBody = {
+          replacedSchedule: this.schedule.selectedSchedule.scheduleId,
+          replacingSubject: this.subject.selectedSubject.subjectId,
+          date: this.date,
+        };
+        if(this.teacher) postBody.teacher = this.teacher;
+        if(this.location) postBody.location = Number(this.location);
+
+        this.$axios.$post(`http://localhost:3050/v1/diary/replacements`, postBody).then((res) => {
+          this.$router.push({ path: '/management/replacements' });
+          this.$toasted.show(`Замена #${res.replacementId} успешно добавлена`, {type: 'success'});
+        }).catch((err) => {
+          if(err.response && err.response.status === 400) {
+            this.$toasted.show(`Ошибка в заполнении данных!`);
+          } else {
+            this.$toasted.show(`Внутренняя ошибка сервера!`);
+          }
         }).finally(() => {
           this.isLoading = false;
         });
@@ -183,6 +169,14 @@
     }
 
     .add--field {
+      .mx-datepicker {
+        @apply w-full;
+      }
+
+      .add--input, .mx-input {
+        @apply text-black p-2 w-full border-none bg-water-200 rounded-2xl shadow-none;
+      }
+
       .field--error {
         @apply text-sm font-bold text-red-500;
       }

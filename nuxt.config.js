@@ -30,7 +30,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/vue-select', ssr: false },
-    { src: '~/plugins/vue-good-table', ssr: false }
+    { src: '~/plugins/vue-good-table', ssr: false },
+    { src: '~/plugins/vue-toasted', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -49,7 +50,8 @@ export default {
 
   moment: {
     defaultLocale: 'ru',
-    locales: ['ru']
+    locales: ['ru'],
+    defaultTimezone: 'Europe/Moscow'
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules

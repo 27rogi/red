@@ -73,7 +73,7 @@ export default {
           },
           {
             icon: ClockIcon,
-            title: "Расписание занятий",
+            title: "Расписание уроков",
             to: "/schedules"
           },
           {
@@ -109,13 +109,13 @@ export default {
             },
             {
               icon: SpeakerphoneIcon,
-              title: "Управление расписанием",
+              title: "Управление уроками",
               to: "/management/schedules",
               auth: true,
             },
             {
               icon: CollectionIcon,
-              title: "Управление уроками",
+              title: "Управление предметами",
               to: "/management/subjects",
               auth: true,
             },

@@ -3,16 +3,12 @@
     <transition name="fade" mode="out-in">
       <uiLoader v-if="$fetchState.pending" />
       <div v-else-if="$fetchState.error">
-        <p>Такого расписания не существует!</p>
+        <p>Такого урока не существует!</p>
       </div>
       <div v-else class="editor">
         <uiLoader v-if="isLoading" />
-        <div v-if="success" class="editor--message">
-          <h6>Успешно обновлено.</h6>
-          <p>Обновление расписания прошло успешно!</p>
-        </div>
         <span v-if="errors && errors.update" class="field--error">{{errors.update}}</span>
-        <h1>Редактирование расписания #{{$route.params.id}}</h1>
+        <h1>Редактирование урока #{{$route.params.id}}</h1>
         <div class="editor--field">
           <p>Учебный предмет <span v-if="errors && errors.subject" class="field--error">{{errors.subject}}</span></p>
           <multiselect id="ajaxSubject" v-model="subject.selectedSubject" :searchable="true" :internal-search="false"
@@ -119,7 +115,6 @@
           ],
         },
         errors: {},
-        success: null,
       }
     },
     async fetch() {
@@ -180,10 +175,14 @@
           weekDay: this.weekDay.selectedWeekDay.day,
           isEven: this.even.isEven.value,
         }).then((res) => {
-          this.success = true;
-        }).catch(() => {
-          this.success = null;
-          this.$set(this.errors, 'update', "Ошибка обновления, обратитесь к администратору!");
+          this.$router.push({ path: '/management/schedules' });
+          this.$toasted.show(`Урок #${this.$route.params.id} успешно обновлен`, {type: 'success'});
+        }).catch((err) => {
+          if(err.response && err.response.status === 400) {
+            this.$toasted.show(`Ошибка в заполнении данных!`);
+          } else {
+            this.$toasted.show(`Внутренняя ошибка сервера!`);
+          }
         }).finally(() => {
           this.isLoading = false;
         });

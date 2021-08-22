@@ -17,7 +17,7 @@ export default {
           width: '5%',
         },
         {
-          label: 'Заменяет расписание #',
+          label: 'Заменяет урок #',
           field: 'schedule.scheduleId',
           width: '20%',
         },

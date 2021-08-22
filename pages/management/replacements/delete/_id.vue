@@ -3,72 +3,36 @@
     <transition name="fade" mode="out-in">
       <uiLoader v-if="$fetchState.pending" />
       <div v-else-if="$fetchState.error">
-        <p>Такого расписания не существует!</p>
+        <p>Такой замены не существует!</p>
       </div>
       <div v-else class="deleting">
         <uiLoader v-if="isLoading" />
-        <div v-if="success" class="deleting--message">
-          <h6>Успешное удаление</h6>
-          <p>Данное расписание было удалено из системы!</p>
-          <p>Вы будете автоматически направлены на список расписаний через {{timeout}}...</p>
-        </div>
-        <h1>Вы собираетесь удалить расписание #{{$route.params.id}}</h1>
-        <div v-if="problems.length > 0" class="deleting--problems">
-          <p class="deleting--warning">Обнаружены следующие проблемы, которые мешают удалению расписания:</p>
-          <p v-for="problem in problems" :key="problem" class="deleting--problem"><span>
-              <ExclamationIcon size="1.5x" /></span> {{problem}}</p>
-        </div>
-        <button v-if="problems.length === 0 && !success" @click="processDelete">Подтвердить удаление</button>
+        <h1>Вы собираетесь удалить замену #{{$route.params.id}}</h1>
+        <button @click="processDelete">Подтвердить удаление</button>
       </div>
     </transition>
   </div>
 </template>
 
 <script>
-  import {
-    ExclamationIcon
-  } from "@vue-hero-icons/outline"
   export default {
-    components: {
-      ExclamationIcon,
-    },
     data() {
       return {
         isLoading: false,
-        timeout: 3,
-        success: null,
         schedule: null,
-        problems: [],
       }
     },
     async fetch() {
       this.$data.schedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules/${this.$route.params.id}?extras=replacement`
+        `http://localhost:3050/v1/diary/replacements/${this.$route.params.id}?extras=schedule`
       ));
-
-      if (this.schedule.replacement) {
-        this.problems.push(
-          `Данное расписание используется в замене #${this.schedule.replacement.replacementId}, удалите замену для продолжения.`
-        );
-      }
     },
     methods: {
       processDelete() {
         this.isLoading = true;
-        this.$axios.$delete(`http://localhost:3050/v1/diary/schedules/${this.$route.params.id}`).then((res) => {
-          const self = this;
-          this.success = true;
-          setTimeout(function run() {
-            if(self.timeout > 0) {
-              self.timeout -= 1;
-              setTimeout(run, 1000);
-            } else {
-              self.$router.push({ path: '/management/schedules' });
-            }
-          }, 1000);
-        }).catch(() => {
-          this.success = null;
-          this.problems.push("Ошибка удаления, обратитесь к администратору!");
+        this.$axios.$delete(`http://localhost:3050/v1/diary/replacements/${this.$route.params.id}`).then((res) => {
+          this.$router.push({ path: '/management/replacements' });
+          this.$toasted.show(`Замена #${this.$route.params.id} успешно удалена`, {type: 'success'});
         }).finally(() => {
           this.isLoading = false;
         });

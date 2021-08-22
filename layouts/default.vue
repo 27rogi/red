@@ -38,6 +38,13 @@ body {
   }
 }
 
+.toasted.toasted-primary {
+  @apply py-2 px-4 font-medium shadow-none rounded-2xl bg-water-600 text-water-50 #{!important};
+  &.success {
+    @apply bg-green-500 #{!important};
+  }
+}
+
 .fade-enter-active, .fade-leave-active {
   @apply transition-all duration-100 ease-in;
 }

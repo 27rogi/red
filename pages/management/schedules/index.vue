@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AdminTable item-id="scheduleId" heading="Управление расписанием" sort="scheduleId" :columns="columns" item="schedules" extras="bell,subject,replacement" />
+    <AdminTable item-id="scheduleId" heading="Управление уроками" sort="scheduleId" :columns="columns" item="schedules" extras="bell,subject,replacement" />
   </div>
 </template>
 
@@ -16,6 +16,16 @@ export default {
           width: '10%',
         },
         {
+          label: 'Номер предмета',
+          field: 'subject.subjectId',
+          width: '10%',
+        },
+        {
+          label: 'Предмет',
+          field: 'subject.name',
+          width: '30%',
+        },
+        {
           label: 'День недели',
           field: 'weekDay',
           type: 'number',
@@ -26,11 +36,6 @@ export default {
           field: 'bellId',
           type: 'number',
           width: '10%',
-        },
-        {
-          label: 'Предмет',
-          field: 'subject.name',
-          width: '20%',
         },
         {
           label: 'Четная?',

@@ -1,5 +1,5 @@
 <template>
-  <div class="schedule" :class="{ 'schedule__inactive': $props.schedules.length == 0}">
+  <div class="schedule" :class="{ 'schedule__inactive': $props.schedules.length == 0, 'schedule__active': $props.date.day === $moment(Date.now()).format('DD') }">
         <div class="schedule--date" @click="collapsed = !collapsed">
           <p>
             {{ $moment(`${$props.date.day}.${$props.date.month}`, 'DD.MM').format('DD MMMM, dddd') }}
@@ -13,6 +13,8 @@
               </div>
               <div class="subject--info">
               <p class="subject--name">{{ schedule.subject.name }} <span v-if="schedule.replacement" class="info info__replaced">Замена</span></p>
+              <p>Преподаватель {{schedule.subject.teacher}}</p>
+              <p>Кабинет №{{schedule.subject.location}}</p>
               </div>
             </div>
           </div>
@@ -36,10 +38,14 @@ export default {
       type: Object,
       default: null,
     },
+    activeDate: {
+      type: null,
+      default: null,
+    },
     index: {
       type: Number,
       default: null,
-    }
+    },
   },
   data() {
     return {
@@ -47,7 +53,10 @@ export default {
     }
   },
   mounted(){
-      this.$smoothReflow()
+      this.$smoothReflow();
+      if(this.$props.date.day === this.$moment(Date.now()).format('DD')) {
+        this.collapsed = false;
+      }
   },
 }
 </script>
@@ -63,7 +72,7 @@ export default {
     .schedule--subjects {
       @apply flex flex-col gap-2;
       .schedule--subject {
-        @apply bg-mariner-light-100 p-4 flex flex-row items-center rounded-2xl;
+        @apply bg-mariner-light-100 p-4 flex flex-row items-start rounded-2xl;
         .subject--time {
           @apply text-water-400 text-base font-medium mr-4;
         }
@@ -89,7 +98,14 @@ export default {
 .schedule__inactive {
   @apply bg-mariner-light-300 bg-opacity-5;
   .schedule--date {
-    @apply text-mariner-light-500 text-opacity-30;
+    @apply text-mariner-light-400 text-opacity-70;
+  }
+}
+
+.schedule__active:not(.schedule__inactive) {
+  @apply mb-6 bg-mariner-light-900 bg-opacity-20 rounded-2xl;
+  .schedule--date {
+    @apply text-water-700 text-opacity-100;
   }
 }
 </style>

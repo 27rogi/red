@@ -3,13 +3,13 @@
     <transition name="fade" mode="out-in">
       <uiLoader v-if="$fetchState.pending" />
       <div v-else-if="$fetchState.error">
-        <p>Такого урока не существует!</p>
+        <p>Такого предмета не существует!</p>
       </div>
       <div v-else class="deleting">
         <uiLoader v-if="isLoading" />
-        <h1>Вы собираетесь удалить урок #{{$route.params.id}}</h1>
+        <h1>Вы собираетесь удалить предмет #{{$route.params.id}}</h1>
         <div v-if="problems.length > 0" class="deleting--problems">
-          <p class="deleting--warning">Обнаружены следующие проблемы, которые мешают удалению урока:</p>
+          <p class="deleting--warning">Обнаружены следующие проблемы, которые мешают удалению предмета:</p>
           <p v-for="problem in problems" :key="problem" class="deleting--problem"><span>
               <ExclamationIcon size="1.5x" /></span> {{problem}}</p>
         </div>
@@ -31,19 +31,33 @@
       return {
         isLoading: false,
         timeout: 3,
-        schedule: null,
+        success: null,
+        schedules: null,
+        replacements: null,
         problems: [],
       }
     },
     async fetch() {
-      this.$data.schedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules/${this.$route.params.id}?extras=replacement`
-      ));
+      this.$data.schedules = (await this.$axios.$get(
+        `http://localhost:3050/v1/diary/schedules?subjectId=${this.$route.params.id}&limit=99999&page=1`
+      )).results;
+      this.$data.replacements = (await this.$axios.$get(
+        `http://localhost:3050/v1/diary/replacements?replacingSubject=${this.$route.params.id}&limit=99999&page=1`
+      )).results;
 
-      if (this.schedule.replacement) {
-        this.problems.push(
-          `Данный урок заменяется #${this.schedule.replacement.replacementId}, удалите эту замену для продолжения.`
-        );
+      if (this.schedules.length > 0) {
+        this.schedules.forEach((schedule) => {
+          this.problems.push(
+            `Данный предмет используется в уроке #${schedule.scheduleId}, удалите его для продолжения.`
+          );
+        });
+      }
+      if (this.$data.replacements.length > 0) {
+        this.replacements.forEach((replacement) => {
+          this.problems.push(
+            `Данный предмет используется в замене #${replacement.replacementId}, удалите ее для продолжения.`
+          );
+        });
       }
     },
     methods: {
@@ -51,9 +65,9 @@
         if(this.problems.length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$delete(`http://localhost:3050/v1/diary/schedules/${this.$route.params.id}`).then((res) => {
-          this.$router.push({ path: '/management/schedules' });
-          this.$toasted.show(`Урок #${this.$route.params.id} успешно удален`, {type: 'success'});
+        this.$axios.$delete(`http://localhost:3050/v1/diary/subjects/${this.$route.params.id}`).then((res) => {
+          this.$router.push({ path: '/management/subjects' });
+          this.$toasted.show(`Предмет #${this.$route.params.id} успешно удален`, {type: 'success'});
         }).catch((err) => {
           if(err.response && err.response.status === 400) {
             this.$toasted.show(`Ошибка в заполнении данных!`);

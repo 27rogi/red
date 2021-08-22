@@ -1,12 +1,8 @@
 <template>
   <div class="add">
     <uiLoader v-if="isLoading" />
-    <div v-if="success && success.scheduleId" class="add--message">
-      <h6>Успешное добавление!</h6>
-      <p>Расписание успешно добавлено, его номер в системе #{{success.scheduleId}}</p>
-    </div>
     <span v-if="errors && errors.update" class="field--error">{{errors.update}}</span>
-    <h1>Добавление нового расписания</h1>
+    <h1>Добавление нового урока</h1>
     <div class="add--field">
       <p>Учебный предмет <span v-if="errors && errors.subject" class="field--error">{{errors.subject}}</span></p>
       <multiselect id="ajaxSubject" v-model="subject.selectedSubject" :searchable="true" :internal-search="false"
@@ -110,7 +106,6 @@
           ],
         },
         errors: {},
-        success: null,
       }
     },
     methods: {
@@ -149,10 +144,14 @@
           weekDay: this.weekDay.selectedWeekDay.day,
           isEven: this.even.isEven.value,
         }).then((res) => {
-          this.success = res;
-        }).catch(() => {
-          this.success = null;
-          this.$set(this.errors, 'update', "Расписание с такими данными уже есть в системе!");
+          this.$router.push({ path: '/management/schedules' });
+          this.$toasted.show(`Урок #${res.scheduleId} успешно создан`, {type: 'success'});
+        }).catch((err) => {
+          if(err.response && err.response.status === 400) {
+            this.$toasted.show(`Ошибка в заполнении данных!`);
+          } else {
+            this.$toasted.show(`Внутренняя ошибка сервера!`);
+          }
         }).finally(() => {
           this.isLoading = false;
         });
