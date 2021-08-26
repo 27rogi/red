@@ -188,7 +188,7 @@
         }
 
         .button {
-          @apply w-1/12 text-base font-medium bg-red-500 text-white;
+          @apply w-1/12 p-2 rounded-full text-base text-center font-medium bg-red-500 text-white;
         }
       }
 
@@ -236,14 +236,14 @@
       }
 
       .add--controls {
-        @apply flex flex-row items-center gap-4 mb-2;
+        @apply flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2;
 
         p {
           @apply m-0;
         }
 
         .button {
-          @apply w-1/6 py-1 text-base font-medium;
+          @apply w-full sm:w-1/6 py-1 text-base font-medium;
         }
       }
     }
