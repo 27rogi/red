@@ -37,13 +37,15 @@
     },
     async fetch() {
       this.$data.schedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules/${this.$route.params.id}?extras=replacement`
+        `http://localhost:3050/v1/diary/schedules/${this.$route.params.id}?extras=replacements`
       ));
 
-      if (this.schedule.replacement) {
-        this.problems.push(
-          `Данный урок заменяется #${this.schedule.replacement.replacementId}, удалите эту замену для продолжения.`
-        );
+      if (this.schedule.replacements) {
+        this.schedule.replacements.forEach((replacement) => {
+          this.problems.push(
+            `Данный урок используется в замене #${replacement.replacementId}, удалите эту замену для продолжения.`
+          );
+        });
       }
     },
     methods: {

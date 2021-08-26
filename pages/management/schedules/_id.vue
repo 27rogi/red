@@ -119,7 +119,7 @@
     },
     async fetch() {
       this.$data.schedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules/${this.$route.params.id}?extras=bell%2Csubject%2Creplacement`
+        `http://localhost:3050/v1/diary/schedules/${this.$route.params.id}?extras=bell%2Csubject%2Creplacements`
       ));
 
       if (this.schedule.subject) this.subject.selectedSubject = this.schedule.subject;

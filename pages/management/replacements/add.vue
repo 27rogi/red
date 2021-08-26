@@ -25,10 +25,10 @@
         :show-labels="false" :allow-empty="false" label="scheduleId" track-by="scheduleId" :options="schedule.schedules"
         :loading="isLoading" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600"
         @search-change="findSchedules" @open="findSchedules">
-        <template slot="singleLabel" slot-scope="props">{{ props.option.subject.name }}</template>
-        <template slot="option" slot-scope="props">{{ props.option.subject.name }} {{days[props.option.weekDay]}} в
-          {{ props.option.bell.starts }}
-          (#{{props.option.scheduleId}})</template>
+            <template slot="singleLabel" slot-scope="props">{{ props.option.subject.name }} ({{even(props.option.isEven)}}) {{days[props.option.weekDay]}} в {{ props.option.bell.starts }}
+              (#{{props.option.scheduleId}})</template>
+            <template slot="option" slot-scope="props">{{ props.option.subject.name }} ({{even(props.option.isEven)}}) {{days[props.option.weekDay]}} в {{ props.option.bell.starts }}
+              (#{{props.option.scheduleId}})</template>
       </multiselect>
     </div>
     <div class="add--field">
@@ -106,7 +106,7 @@
       },
       findSchedules(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacement`).then(
+        this.$axios.$get(`http://localhost:3050/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements`).then(
           response => {
             this.schedule.schedules = response.results
             this.isLoading = false
@@ -117,6 +117,10 @@
         if (!this.subject.selectedSubject) this.$set(this.errors, 'subject', "Не казан заменяемый учебный предмет!");
         if (!this.schedule.selectedSchedule) this.$set(this.errors, 'schedule', "Не указан заменяемый урок!");
         if (!this.date) this.$set(this.errors, 'date', "Не указана дата замены!");
+        if (this.schedule.selectedSchedule && this.date) {
+          if(this.$moment(this.date, 'DD/MM/YYYY').isoWeekday() !== this.schedule.selectedSchedule.weekDay) this.$set(this.errors, 'date', "Нельзя поставить замену урока на другой день недели!");
+          if((Math.abs(this.$moment(this.date, 'DD/MM/YYYY').week() - this.$moment('01 09', 'DD MM').week()) % 2 === 1) !== this.schedule.selectedSchedule.isEven) this.$set(this.errors, 'date', "Нельзя поставить замену урока на дату с отличающейся четностью!");
+        }
 
         if (Object.keys(this.errors).length > 0) return;
 
@@ -143,6 +147,10 @@
           this.isLoading = false;
         });
       },
+      even(value) {
+        if(value) return "четный"
+        else return "нечетный"
+      }
     },
   }
 

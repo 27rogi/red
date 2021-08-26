@@ -1,5 +1,5 @@
 <template>
-<div class="container">
+<div class="table-container">
   <transition name="fade" mode="out-in">
     <uiLoader v-if="$fetchState.pending" />
     <div v-else-if="$fetchState.error">An error occurred :(</div>

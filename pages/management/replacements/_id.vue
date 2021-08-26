@@ -27,9 +27,9 @@
             :show-labels="false" :allow-empty="false" label="starts" track-by="scheduleId" :options="schedule.schedules"
             :loading="isLoading" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600"
             @search-change="findSchedules" @open="findSchedules">
-            <template slot="singleLabel" slot-scope="props">{{ props.option.subject.name }} {{days[props.option.weekDay]}} в
-              {{ props.option.bell.starts }} (#{{props.option.scheduleId}})</template>
-            <template slot="option" slot-scope="props">{{ props.option.subject.name }} {{days[props.option.weekDay]}} в {{ props.option.bell.starts }}
+            <template slot="singleLabel" slot-scope="props">{{ props.option.subject.name }} ({{even(props.option.isEven)}}) {{days[props.option.weekDay]}} в {{ props.option.bell.starts }}
+              (#{{props.option.scheduleId}})</template>
+            <template slot="option" slot-scope="props">{{ props.option.subject.name }} ({{even(props.option.isEven)}}) {{days[props.option.weekDay]}} в {{ props.option.bell.starts }}
               (#{{props.option.scheduleId}})</template>
           </multiselect>
         </div>
@@ -49,6 +49,7 @@
           <input id="location" v-model="location" class="editor--input" placeholder="Введите номер кабинета" type="number" />
         </div>
         <button @click="sendData">Сохранить</button>
+        {{$moment("29 08", "DD MM").day()}}
       </div>
     </transition>
   </div>
@@ -99,8 +100,10 @@
 
       if (this.replacement.subject) this.subject.selectedSubject = this.replacement.subject;
       if (this.replacement.date) this.date = this.replacement.date;
+      if (this.replacement.teacher) this.teacher = this.replacement.teacher;
+      if (this.replacement.location) this.location = this.replacement.location;
       this.$data.schedule.selectedSchedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules/${this.replacement.replacedSchedule}?extras=subject,bell,replacement`
+        `http://localhost:3050/v1/diary/schedules/${this.replacement.replacedSchedule}?extras=subject,bell,replacements`
       ));
     },
     methods: {
@@ -118,7 +121,7 @@
       findSchedules(query) {
         this.isLoading = true
         this.$axios.$get(
-            `http://localhost:3050/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacement`)
+            `http://localhost:3050/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements`)
           .then(
             response => {
               this.schedule.schedules = response.results
@@ -130,6 +133,10 @@
         if (!this.subject.selectedSubject) this.$set(this.errors, 'subject', "Не казан заменяемый учебный предмет!");
         if (!this.schedule.selectedSchedule) this.$set(this.errors, 'schedule', "Не указан заменяемый урок!");
         if (!this.date) this.$set(this.errors, 'date', "Не указана дата замены!");
+        if (this.schedule.selectedSchedule && this.date) {
+          if(this.$moment(this.date, 'DD/MM/YYYY').isoWeekday() !== this.schedule.selectedSchedule.weekDay) this.$set(this.errors, 'date', "Нельзя поставить замену урока на другой день недели!");
+          if((Math.abs(this.$moment(this.date, 'DD/MM/YYYY').week() - this.$moment('01 09', 'DD MM').week()) % 2 === 1) !== this.schedule.selectedSchedule.isEven) this.$set(this.errors, 'date', "Нельзя поставить замену урока на дату с отличающейся четностью!");
+        }
 
         if (Object.keys(this.errors).length > 0) return;
 
@@ -139,9 +146,10 @@
           replacedSchedule: this.schedule.selectedSchedule.scheduleId,
           replacingSubject: this.subject.selectedSubject.subjectId,
           date: this.date,
+          teacher: this.teacher,
+          location: (Number(this.location) > 0) ? Number(this.location) : null,
         };
-        if(this.teacher) patchBody.teacher = this.teacher;
-        if(this.location) patchBody.location = Number(this.location);
+
 
         this.$axios.$patch(`http://localhost:3050/v1/diary/replacements/${this.$route.params.id}`, patchBody).then((res) => {
           this.$router.push({ path: '/management/replacements' });
@@ -156,6 +164,10 @@
           this.isLoading = false;
         });
       },
+      even(value) {
+        if(value) return "четный"
+        else return "нечетный"
+      }
     },
   }
 

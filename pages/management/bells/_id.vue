@@ -57,6 +57,7 @@
         this.$set(this, 'errors', {});
         if (!this.starts) this.$set(this.errors, 'starts', "Не указано время начального звонка!");
         if (!this.ends) this.$set(this.errors, 'ends', "Не указано время оканчивающего звонка!");
+        if (this.$moment(this.ends, 'HH:mm').isBefore(this.$moment(this.starts, 'HH:mm'))) this.$set(this.errors, 'ends', "Окончание звонка должно быть позже его начала!");
 
         if (Object.keys(this.errors).length > 0) return;
 

@@ -43,6 +43,8 @@ import {
   CollectionIcon,
   BellIcon,
   LibraryIcon,
+  InboxInIcon,
+  ClipboardCheckIcon
 } from "@vue-hero-icons/outline"
 
 export default {
@@ -59,7 +61,9 @@ export default {
     SwitchHorizontalIcon,
     CollectionIcon,
     BellIcon,
-    LibraryIcon
+    LibraryIcon,
+    InboxInIcon,
+    ClipboardCheckIcon,
   },
   data() {
     return {
@@ -86,6 +90,11 @@ export default {
             title: "Предметы",
             to: "/subjects"
           },
+          {
+            icon: InboxInIcon,
+            title: "Домашние задания",
+            to: "/homeworks"
+          },
         ],
         account: {
           base: [
@@ -96,9 +105,9 @@ export default {
               auth: false,
             },
             {
-              icon: PuzzleIcon,
-              title: "Панель управления",
-              to: "/management",
+              icon: ClipboardCheckIcon,
+              title: "Управление домашкой",
+              to: "/management/homeworks",
               auth: true,
             },
             {
@@ -162,9 +171,9 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar {
-  @apply overflow-auto z-30 w-[20%] hidden fixed sm:flex flex-col h-full bg-opacity-5 bg-mariner-light-600 rounded-r-2xl;
+  @apply transition-opacity overflow-auto z-30 w-[20%] hidden opacity-0 md:opacity-100 fixed md:flex flex-col h-full bg-opacity-5 bg-mariner-light-600 rounded-r-2xl;
   &__mobile {
-    @apply flex fixed w-full bg-mariner-light-200;
+    @apply opacity-100 flex fixed w-full bg-mariner-light-200;
   }
   .sidebar--logo {
     @apply flex justify-center p-6 mb-6;
@@ -178,7 +187,7 @@ export default {
       @apply mt-auto;
     }
     .sidebar--link {
-      @apply flex flex-row items-center font-semibold text-lg mx-2 py-2 px-4 text-water-600 rounded-2xl;
+      @apply flex flex-row items-center font-semibold sm:text-sm md:text-base 2xl:text-lg mx-2 py-2 px-4 text-water-600 md:p-2 md:m-2 md:flex-col md:text-center md:justify-center xl:text-left xl:m-0 xl:p-0 xl:mx-2 xl:py-2 xl:px-4 xl:flex-row xl:justify-start rounded-2xl;
       span {
         @apply relative mr-2;
       }
@@ -193,6 +202,6 @@ export default {
 }
 
 .floating-menu {
-  @apply z-50 cursor-pointer bottom-0 right-0 fixed sm:hidden bg-water-600 text-mariner-light-50 rounded-full m-4 p-4 text-3xl;
+  @apply z-50 cursor-pointer bottom-0 right-0 fixed md:hidden bg-water-600 text-mariner-light-50 rounded-full m-4 p-4 text-3xl;
 }
 </style>

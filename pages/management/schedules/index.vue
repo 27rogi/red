@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AdminTable item-id="scheduleId" heading="Управление уроками" sort="scheduleId" :columns="columns" item="schedules" extras="bell,subject,replacement" />
+    <AdminTable item-id="scheduleId" heading="Управление уроками" sort="scheduleId" :columns="columns" item="schedules" extras="bell,subject,replacements" />
   </div>
 </template>
 

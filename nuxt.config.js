@@ -31,7 +31,8 @@ export default {
   plugins: [
     { src: '~/plugins/vue-select', ssr: false },
     { src: '~/plugins/vue-good-table', ssr: false },
-    { src: '~/plugins/vue-toasted', ssr: false }
+    { src: '~/plugins/vue-toasted', ssr: false },
+    { src: '~/plugins/vue-tippy', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

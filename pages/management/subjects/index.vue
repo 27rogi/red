@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AdminTable item-id="subjectId" heading="Управление предметами" sort="scheduleId" :columns="columns" item="subjects" />
+    <AdminTable item-id="subjectId" heading="Управление предметами" sort="scheduleId" :columns="columns" item="subjects" extras="homeworks" />
   </div>
 </template>
 
@@ -28,6 +28,15 @@ export default {
           field: 'location',
           type: 'number',
           width: '10%',
+        },
+        {
+          label: 'Количество домашки',
+          field: 'homeworks',
+          type: 'number',
+          width: '10%',
+          formatFn(value) {
+            return value.length;
+          },
         },
         {
           label: 'Действия',
