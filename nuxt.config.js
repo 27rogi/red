@@ -23,6 +23,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '~/assets/base.scss',
     '~/assets/table.scss',
     '~/assets/select.scss'
   ],
@@ -47,6 +48,7 @@ export default {
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/moment',
+    '@nuxtjs/color-mode',
   ],
 
   moment: {
@@ -63,6 +65,12 @@ export default {
     '@nuxtjs/pwa',
     '@nuxtjs/auth-next',
   ],
+
+  colorMode: {
+    classSuffix: '',
+    fallback: 'light',
+    preference: 'light',
+  },
 
   auth: {
     strategies: {

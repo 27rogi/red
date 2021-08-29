@@ -7,12 +7,12 @@
      <multiselect :value="limitValue" :hide-selected="true" placeholder="Укажите кол. во" :show-labels="false" :allow-empty="false" label="name" track-by="name" :options="variants" @select="select"></multiselect>
     </div>
     <div class="management-header--control management-header--control__page-controls">
-      <button @click="$emit('pageBack', $props.page)">Назад</button>
+      <button class="button" @click="$emit('pageBack', $props.page)">Назад</button>
       <p>{{ page }} из {{ pages }}</p>
-      <button @click="$emit('pageNext', $props.page)">Далее</button>
+      <button class="button" @click="$emit('pageNext', $props.page)">Далее</button>
     </div>
     <div class="management-header--control management-header--control__page-add">
-      <button @click="$emit('pageAdd', $props.page)">Добавить</button>
+      <button class="button button__primary" @click="$emit('pageAdd', $props.page)">Добавить</button>
     </div>
   </div>
 </template>
@@ -69,31 +69,33 @@ import Multiselect from 'vue-multiselect'
     .management-header--control {
       @apply items-center justify-center flex flex-row gap-2;
 
+      input {
+        @apply bg-mariner-light-50;
+      }
+
+      .multiselect {
+          .multiselect__tags, .multiselect .multiselect__content-wrapper {
+            @apply bg-mariner-light-50;
+          }
+          .multiselect__content {
+            @apply bg-mariner-light-50;
+          }
+      }
+
       &__search {
         @apply xl:w-[45%];
 
         input {
-          @apply w-full bg-water-50 p-2 px-4 rounded-2xl;
+          @apply w-full p-2 px-4 rounded-2xl;
         }
       }
 
       &__limiter {
         @apply xl:w-[20%];
-        .multiselect {
-          .multiselect__tags {
-            @apply border-none bg-water-50 rounded-2xl;
-          }
-          .multiselect__content-wrapper {
-            @apply border-none bg-water-50 rounded-2xl;
-          }
-        }
       }
 
       &__page-add {
         @apply xl:w-[10%];
-        button {
-          @apply bg-mariner-light-900 text-white #{!important};
-        }
       }
 
       &__page-controls {
@@ -109,12 +111,26 @@ import Multiselect from 'vue-multiselect'
 
         a.button,
         button {
-          @apply w-full text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-          &:hover {
-            @apply bg-mariner-200;
-          }
+          @apply w-full text-center px-6 py-2;
         }
+      }
+    }
+  }
+
+  .dark .management-header {
+    @apply bg-water-dark-800;
+    .management-header--control {
+      input {
+        @apply bg-water-dark-700;
+      }
+
+      .multiselect {
+          .multiselect__tags, .multiselect .multiselect__content-wrapper {
+            @apply bg-water-dark-700;
+          }
+          .multiselect__content {
+            @apply bg-water-dark-700;
+          }
       }
     }
   }

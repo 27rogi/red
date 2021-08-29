@@ -13,14 +13,14 @@
       <date-picker v-model="ends" type="time" :lang="{formatLocale: { firstDayOfWeek: 1, }}" value-type="HH:mm"
         format="HH:mm" />
     </div>
-    <button @click="sendData">Сохранить</button>
+    <button class="button button__w-full" @click="sendData">Сохранить</button>
   </div>
 </template>
 
 <script>
   import DatePicker from "vue2-datepicker";
   import 'vue2-datepicker/locale/ru';
-  import 'vue2-datepicker/index.css';
+
 
   export default {
     components: {
@@ -90,43 +90,8 @@
         @apply w-full;
       }
 
-      .add--input,
-      .mx-input {
-        @apply text-black p-2 w-full border-none bg-water-200 rounded-2xl shadow-none;
-      }
-
       .field--error {
         @apply text-sm font-bold text-red-500;
-      }
-
-      .multiselect {
-        @apply font-medium;
-
-        .multiselect__tags {
-          @apply border-none bg-water-200 rounded-2xl;
-        }
-
-        .multiselect__content-wrapper {
-          @apply border-none bg-water-200 rounded-2xl;
-        }
-
-        .multiselect__option--highlight {
-          @apply bg-mariner-light-600 bg-opacity-10 text-mariner-light-600;
-        }
-
-        .multiselect__option--selected {
-          @apply bg-mariner-light-500 bg-opacity-20 text-mariner-light-800;
-
-          &.multiselect__option--highlight {
-            @apply bg-mariner-light-500 bg-opacity-20 text-mariner-light-800;
-          }
-        }
-
-        .multiselect__input,
-        .multiselect__single {
-          line-height: inherit;
-          @apply bg-transparent;
-        }
       }
 
       p {
@@ -134,13 +99,6 @@
       }
     }
 
-    button {
-      @apply w-full text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-      &:hover {
-        @apply bg-mariner-200;
-      }
-    }
   }
 
 </style>

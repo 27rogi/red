@@ -43,7 +43,7 @@
         <p>Вы еще не добавили ссылки</p>
       </div>
     </div>
-    <button @click="sendData">Сохранить</button>
+    <button class="button button__w-full" @click="sendData">Сохранить</button>
   </div>
 </template>
 
@@ -51,7 +51,7 @@
   import Multiselect from 'vue-multiselect'
   import DatePicker from 'vue2-datepicker';
   import 'vue2-datepicker/locale/ru';
-  import 'vue2-datepicker/index.css';
+
 
   export default {
     components: {
@@ -80,7 +80,7 @@
             return this.$set(this.errors, 'files',
               "Неправильно указаны ссылки, они должны указывать на файл формата (.jpg, .gif или .png)");
           } else {
-            this.$data.files[index] = file;
+            this.$data.files[index] = fileLink;
             this.$set(this.errors, 'files', null);
           }
         });
@@ -188,47 +188,17 @@
         }
 
         .button {
-          @apply w-1/12 p-2 rounded-full text-base text-center font-medium bg-red-500 text-white;
+          @apply w-1/12 p-2 rounded-full text-base text-center font-medium;
         }
       }
 
       .add--input,
       .mx-input {
-        @apply text-black p-2 w-full border-none bg-water-200 rounded-2xl shadow-none;
+        @apply w-full border-none rounded-2xl shadow-none;
       }
 
       .field--error {
         @apply text-sm font-bold text-red-500;
-      }
-
-      .multiselect {
-        @apply font-medium;
-
-        .multiselect__tags {
-          @apply border-none bg-water-200 rounded-2xl;
-        }
-
-        .multiselect__content-wrapper {
-          @apply border-none bg-water-200 rounded-2xl;
-        }
-
-        .multiselect__option--highlight {
-          @apply bg-mariner-light-600 bg-opacity-10 text-mariner-light-600;
-        }
-
-        .multiselect__option--selected {
-          @apply bg-mariner-light-500 bg-opacity-20 text-mariner-light-800;
-
-          &.multiselect__option--highlight {
-            @apply bg-mariner-light-500 bg-opacity-20 text-mariner-light-800;
-          }
-        }
-
-        .multiselect__input,
-        .multiselect__single {
-          line-height: inherit;
-          @apply bg-transparent;
-        }
       }
 
       p {
@@ -245,14 +215,6 @@
         .button {
           @apply w-full sm:w-1/6 py-1 text-base font-medium;
         }
-      }
-    }
-
-    button {
-      @apply w-full text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-      &:hover {
-        @apply bg-mariner-200;
       }
     }
   }

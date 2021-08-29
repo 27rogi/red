@@ -27,7 +27,7 @@
           <input id="location" v-model="location" class="editor--input" placeholder="Введите номер кабинета"
             type="number" />
         </div>
-        <button @click="sendData">Сохранить</button>
+        <button class="button button__w-full" @click="sendData">Сохранить</button>
       </div>
     </transition>
   </div>
@@ -109,7 +109,7 @@
     .editor--field {
 
       .editor--input {
-        @apply text-black p-2 w-full border-none bg-water-200 rounded-2xl shadow-none;
+        @apply p-2 w-full border-none rounded-2xl shadow-none;
       }
 
       .field--error {
@@ -118,14 +118,6 @@
 
       p {
         @apply text-lg font-semibold mb-2;
-      }
-    }
-
-    button {
-      @apply w-full text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-      &:hover {
-        @apply bg-mariner-200;
       }
     }
   }

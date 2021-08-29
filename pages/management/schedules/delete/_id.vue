@@ -13,7 +13,7 @@
           <p v-for="problem in problems" :key="problem" class="deleting--problem"><span>
               <ExclamationIcon size="1.5x" /></span> {{problem}}</p>
         </div>
-        <button v-if="problems.length === 0" @click="processDelete">Подтвердить удаление</button>
+        <button class="button button__w-full" v-if="problems.length === 0" @click="processDelete">Подтвердить удаление</button>
       </div>
     </transition>
   </div>
@@ -94,14 +94,6 @@
 
       .deleting--problem {
         @apply flex text-red-600 flex-row text-lg font-medium items-center gap-2;
-      }
-    }
-
-    button {
-      @apply w-full text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-      &:hover {
-        @apply bg-mariner-200;
       }
     }
   }

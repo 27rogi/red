@@ -1,12 +1,15 @@
 <template>
   <div class="app">
-    <div class="sidebar-container">
-      <uiSidebar />
-    </div>
-    <div class="content-container">
-      <Nuxt />
-    </div>
+    <ColorScheme tag="span">
+      <div class="sidebar-container">
+        <uiSidebar />
+      </div>
+      <div class="content-container">
+        <Nuxt />
+      </div>
+    </ColorScheme>
   </div>
+
 </template>
 
 <script>
@@ -38,28 +41,11 @@ body {
   }
 }
 
-.toasted.toasted-primary {
-  @apply py-2 px-4 font-medium shadow-none rounded-2xl bg-water-600 text-water-50 #{!important};
-  &.success {
-    @apply bg-green-500 #{!important};
-  }
+.dark .app {
+  @apply bg-mariner-dark-900;
 }
 
-.mx-datepicker-main {
-  @apply bg-water-100 border-none rounded-2xl #{!important};
-  &.mx-datepicker-popup {
-    @apply shadow-2xl #{!important};
-  }
-}
-
-.multiselect__placeholder {
-  @apply text-water-600;
-}
-
-.fade-enter-active, .fade-leave-active {
-  @apply transition-all duration-100 ease-in;
-}
-.fade-enter, .fade-leave-to {
-  @apply transform-gpu -translate-y-1 opacity-0;
+.dark body {
+  @apply text-mariner-dark-200;
 }
 </style>

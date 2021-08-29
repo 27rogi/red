@@ -65,7 +65,7 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
     .homeworks--header {
       @apply flex flex-col sm:flex-row gap-4 items-center justify-center;
       .button {
-        @apply w-full sm:w-auto ml-auto bg-mariner-light-900 text-white;
+        @apply w-full sm:w-auto ml-auto;
       }
     }
 

@@ -48,7 +48,7 @@
               class="field--error">{{errors.location}}</span></p>
           <input id="location" v-model="location" class="editor--input" placeholder="Введите номер кабинета" type="number" />
         </div>
-        <button @click="sendData">Сохранить</button>
+        <button class="button button__w-full" @click="sendData">Сохранить</button>
         {{$moment("29 08", "DD MM").day()}}
       </div>
     </transition>
@@ -59,7 +59,7 @@
   import Multiselect from 'vue-multiselect'
   import DatePicker from 'vue2-datepicker';
   import 'vue2-datepicker/locale/ru';
-  import 'vue2-datepicker/index.css';
+
 
   export default {
     components: {
@@ -198,54 +198,12 @@
         @apply w-full;
       }
 
-      .editor--input, .mx-input {
-        @apply text-black p-2 w-full border-none bg-water-200 rounded-2xl shadow-none;
-      }
-
       .field--error {
         @apply text-sm font-bold text-red-500;
       }
 
-      .multiselect {
-        @apply font-medium;
-
-        .multiselect__tags {
-          @apply border-none bg-water-200 rounded-2xl;
-        }
-
-        .multiselect__content-wrapper {
-          @apply border-none bg-water-200 rounded-2xl;
-        }
-
-        .multiselect__option--highlight {
-          @apply bg-mariner-light-600 bg-opacity-10 text-mariner-light-600;
-        }
-
-        .multiselect__option--selected {
-          @apply bg-mariner-light-500 bg-opacity-20 text-mariner-light-800;
-
-          &.multiselect__option--highlight {
-            @apply bg-mariner-light-500 bg-opacity-20 text-mariner-light-800;
-          }
-        }
-
-        .multiselect__input,
-        .multiselect__single {
-          line-height: inherit;
-          @apply bg-transparent;
-        }
-      }
-
       p {
         @apply text-lg font-semibold mb-2;
-      }
-    }
-
-    button {
-      @apply w-full text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-      &:hover {
-        @apply bg-mariner-200;
       }
     }
   }

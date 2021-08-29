@@ -8,7 +8,7 @@
       <div v-else class="deleting">
         <uiLoader v-if="isLoading" />
         <h1>Вы собираетесь удалить замену #{{$route.params.id}}</h1>
-        <button @click="processDelete">Подтвердить удаление</button>
+        <button class="button button__w-full" @click="processDelete">Подтвердить удаление</button>
       </div>
     </transition>
   </div>
@@ -65,14 +65,6 @@
 
       .deleting--problem {
         @apply flex text-red-600 flex-row text-lg font-medium items-center gap-2;
-      }
-    }
-
-    button {
-      @apply w-full text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-      &:hover {
-        @apply bg-mariner-200;
       }
     }
   }

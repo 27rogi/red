@@ -15,15 +15,11 @@
                 <div class="today--info">
                   <nuxt-link
                     :to="`/subjects/${(isReplaced(currentSchedule)) ? currentSchedule.replacement.subject.subjectId : currentSchedule.subjectId}`"
-                    class="today--schedule">
+                    class="today--schedule today--schedule__current">
                     <h2 v-if="isReplaced(currentSchedule)">{{currentSchedule.replacement.subject.name}}</h2>
                     <h2 v-else>{{currentSchedule.subject.name}}</h2>
-                    <p v-if="isReplaced(currentSchedule) && currentSchedule.replacement.subject.location">Кабинет
-                      <b>№{{currentSchedule.replacement.subject.location}}</b></p>
-                    <p v-else>Кабинет <b>№{{currentSchedule.subject.location}}</b></p>
-                    <p v-if="isReplaced(currentSchedule) && currentSchedule.replacement.subject.teacher">Преподаватель:
-                      <b>{{currentSchedule.replacement.subject.teacher}}</b></p>
-                    <p v-else>Преподаватель: <b>{{currentSchedule.subject.teacher}}</b></p>
+                    <p>Кабинет <b>№{{getLocation(currentSchedule)}}</b></p>
+                    <p>Преподаватель: <b>{{getTeacher(currentSchedule)}}</b></p>
                   </nuxt-link>
                   <p>До окончания пары осталось <b>{{ timeLeft }}</b></p>
                 </div>
@@ -33,15 +29,11 @@
                 <div class="today--info">
                   <nuxt-link
                     :to="`/subjects/${(isReplaced(schedules[0])) ? schedules[0].replacement.subject.subjectId : schedules[0].subjectId}`"
-                    class="today--schedule today--schedule__next">
+                    class="today--schedule">
                     <h2 v-if="isReplaced(schedules[0])">{{schedules[0].replacement.subject.name}}</h2>
                     <h2 v-else>{{schedules[0].subject.name}}</h2>
-                    <p v-if="isReplaced(schedules[0]) && schedules[0].replacement.subject.location">Кабинет
-                      <b>№{{schedules[0].replacement.subject.location}}</b></p>
-                    <p v-else>Кабинет <b>№{{schedules[0].subject.location}}</b></p>
-                    <p v-if="isReplaced(schedules[0]) && schedules[0].replacement.subject.teacher">Преподаватель:
-                      <b>{{schedules[0].replacement.subject.teacher}}</b></p>
-                    <p v-else>Преподаватель: <b>{{schedules[0].subject.teacher}}</b></p>
+                    <p>Кабинет <b>№{{getLocation(schedules[0])}}</b></p>
+                    <p>Преподаватель: <b>{{getTeacher(schedules[0])}}</b></p>
                   </nuxt-link>
                   <p>До начала пары осталось <b>{{ timeLeft }}</b></p>
                 </div>
@@ -60,7 +52,9 @@
                 <div class="today--info">
                   <nuxt-link v-for="homework in currentSchedule.homeworks" :key="homework.homeworkId"
                     :to="`/subjects/${homework.homeworkId}`" class="today--homework">
-                    <h2>{{currentSchedule.subject.name}}</h2>
+                    <h2>Задание до {{$moment(homework.date, 'DD/MM/YYYY').format('DD MMMM')}}</h2>
+                    <p><b>Задано</b>: {{$moment(homework.created).format('DD MMMM')}}</p>
+                    <p><b>Цель задания</b>:</p>
                     <p>{{homework.mission}}</p>
                   </nuxt-link>
                 </div>
@@ -71,7 +65,9 @@
                 <div class="today--info">
                   <nuxt-link v-for="homework in schedules[0].homeworks" :key="homework.homeworkId"
                     :to="`/subjects/${homework.homeworkId}`" class="today--homework">
-                    <h2>{{schedules[0].subject.name}}</h2>
+                    <h2>Задание до {{$moment(homework.date, 'DD/MM/YYYY').format('DD MMMM')}}</h2>
+                    <p><b>Задано</b>: {{$moment(homework.created).format('DD MMMM')}}</p>
+                    <p><b>Цель задания</b>:</p>
                     <p>{{homework.mission}}</p>
                   </nuxt-link>
                 </div>
@@ -130,31 +126,25 @@
       schedules.forEach(async (schedule, index) => {
         if (schedule.replacements) {
           schedule.replacements.forEach((replacement) => {
-            console.log('trying to check ' + replacement.replacementId)
-            console.log(this.$moment(replacement.date, 'DD/MM/YYYY').format('DD MM'))
-            console.log(currentDate.format('DD MM'))
             if (this.$moment(replacement.date, 'DD/MM/YYYY').format('DD MM') !== currentDate.format(
               'DD MM')) return;
-            console.log('check passed')
             replacements.forEach((item) => {
               if (item.replacementId === replacement.replacementId) this.$set(schedule, 'replacement',
                 item)
             });
-
-            console.log(schedule.data)
           });
         }
+
         if (schedule.homeworks) {
+          let homeworkProvider = schedule;
+          if(schedule.replacement) {
+            homeworkProvider = await this.$axios.$get(`http://localhost:3050/v1/diary/subjects/${schedule.replacement.replacingSubject}?extras=homeworks`);
+          }
+
           const activeHomeworks = [];
-          await schedule.homeworks.forEach((homework) => {
-            console.log(
-              `is ${currentDate.format('DD.MM')} between ${this.$moment(homework.created).format('DD.MM')} and ${this.$moment(homework.date, 'DD/MM/YYYY').format('DD.MM')}`
-            )
+          await homeworkProvider.homeworks.forEach((homework) => {
             if (currentDate.isBetween(this.$moment(homework.created).day(-1), this.$moment(homework.date,
                 'DD/MM/YYYY'))) {
-              if (schedule.replacement && schedule.replacement.replacingSubject !== schedule.subject
-                .subjectId) return;
-
               activeHomeworks.push(homework);
             }
           });
@@ -176,15 +166,8 @@
       });
 
       const filtered = schedules.filter((schedule, index) => {
-        console.log('checking ' + schedule.subject.name)
-        console.log(
-          `(${schedule.subject.name}) is current time ${currentDate.format('HH:mm')} is between ${this.$moment(schedule.bell.starts, 'HH:mm').format('HH:mm')} and ${this.$moment(schedule.bell.ends, 'HH:mm').format('HH:mm')}?`
-          )
         if (currentDate.isBetween(this.$moment(schedule.bell.starts, 'HH:mm'), this.$moment(schedule.bell.ends,
             'HH:mm'))) {
-          console.log(
-            `(${schedule.subject.name}) current time ${currentDate.format('HH:mm')} is between ${this.$moment(schedule.bell.starts, 'HH:mm').format('HH:mm')} and ${this.$moment(schedule.bell.ends, 'HH:mm').format('HH:mm')}`
-            )
           this.$data.currentSchedule = schedule;
 
           const endTime = this.$moment(schedule.bell.ends, 'HH:mm').add('1', 'minute');
@@ -201,9 +184,6 @@
         }
 
         if (currentDate.isBefore(this.$moment(schedule.bell.starts, 'HH:mm'))) {
-          console.log(
-            `(${schedule.subject.name}) first current time ${currentDate.format('HH:mm')} is before ${this.$moment(schedule.bell.starts, 'HH:mm').format('HH:mm')}`
-            )
           return true;
         }
 
@@ -215,8 +195,6 @@
         const startTime = currentDate;
         this.$data.scheduleTimeLeft = this.calculateTimeLeft(endTime, startTime);
       }
-
-      console.log(filtered);
 
       this.$data.schedules = filtered;
     },
@@ -231,13 +209,10 @@
       },
     },
     beforeDestroy() {
-      console.log(this.$data)
       if (this.$data.timeoutTimer) {
-        console.log('clearing timeoutTimer')
         clearTimeout(this.$data.timeoutTimer);
       }
       if (this.$data.timer) {
-        console.log('clearing timer')
         clearInterval(this.$data.timer);
       }
     },
@@ -252,6 +227,18 @@
       }, secondsRemaining);
     },
     methods: {
+      getTeacher(schedule) {
+        if(this.isReplaced(schedule)) {
+          return (schedule.replacement.teacher) ? schedule.replacement.teacher : schedule.replacement.subject.teacher
+        }
+        return schedule.subject.teacher
+      },
+      getLocation(schedule) {
+        if(this.isReplaced(schedule)) {
+          return (schedule.replacement.location) ? schedule.replacement.location : schedule.replacement.subject.location
+        }
+        return schedule.subject.location
+      },
       calculateTimeLeft(endTime, startTime) {
         const hoursLeft = endTime.diff(startTime, 'hours');
         const minutesLeft = this.$moment.utc(this.$moment(endTime, "HH:mm").diff(this.$moment(startTime, "HH:mm")))
@@ -305,7 +292,7 @@
           .today--schedule {
             @apply -m-2 p-4 bg-water-200 rounded-2xl;
 
-            &__next {
+            &__current {
               @apply bg-mariner-500 text-white text-opacity-60;
 
               h2 {
@@ -324,6 +311,42 @@
         }
       }
     }
+  }
+
+  .dark .today .today--blocks .today--block {
+        @apply bg-water-dark-800;
+
+        h2 {
+          @apply text-mariner-dark-200;
+        }
+
+        .today--info {
+          @apply text-mariner-300 text-opacity-60;
+
+          b {
+            @apply text-mariner-500;
+          }
+
+          .today--schedule {
+            @apply bg-water-dark-700;
+
+            &__current {
+              @apply bg-mariner-dark-200 text-white text-opacity-60;
+
+              h2 {
+                @apply text-white;
+              }
+
+              b {
+                @apply text-white;
+              }
+            }
+          }
+
+          .today--homework {
+            @apply bg-water-dark-700;
+          }
+        }
   }
 
 </style>

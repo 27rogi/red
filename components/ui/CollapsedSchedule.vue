@@ -91,9 +91,6 @@
         if (schedule.homeworks) {
           const activeHomeworks = [];
           schedule.homeworks.forEach((homework) => {
-            console.log(
-              `is ${this.$moment(scheduleDate).format('DD.MM')} between ${this.$moment(homework.created).format('DD.MM')} and ${this.$moment(homework.date, 'DD/MM/YYYY').format('DD.MM')}`
-            )
             if (this.$moment(scheduleDate).isBetween(this.$moment(homework.created).isoWeekday(-2), this.$moment(homework.date, 'DD/MM/YYYY'))) activeHomeworks.push(homework);
           });
           this.$set(schedule, 'homeworks', activeHomeworks);
@@ -136,7 +133,6 @@
         if (schedule.homeworks.length <= 0) return false;
 
         if (schedule.replacement) {
-          console.log('тут замена епты')
           if (schedule.subject.subjectId === schedule.replacement.subject.subjectId) return true;
           else return false;
         }
@@ -150,7 +146,7 @@
 
 <style lang="scss" scoped>
   .schedule {
-    @apply mb-6 bg-mariner-400 bg-opacity-10 rounded-2xl;
+    @apply mb-6 bg-mariner-100 bg-opacity-90 rounded-2xl;
 
     .schedule--date {
       @apply cursor-pointer px-6 py-4 font-semibold text-xl text-water-500;
@@ -163,10 +159,10 @@
         @apply flex flex-col gap-2;
 
         .schedule--subject {
-          @apply bg-mariner-light-100 p-4 flex flex-row items-start rounded-2xl;
+          @apply bg-water-50 bg-opacity-95 p-4 flex flex-col sm:flex-row sm:items-start rounded-2xl;
 
           .subject--time {
-            @apply text-water-400 text-base font-medium mr-4;
+            @apply sm:w-auto text-mariner-light-300 text-base font-medium mx-auto mb-1 sm:mr-4 sm:mt-0.5;
           }
 
           .subject--info {
@@ -210,11 +206,75 @@
   }
 
   .schedule__active {
-    @apply mb-6 bg-mariner-light-900 bg-opacity-20 rounded-2xl;
+    @apply mb-6 bg-mariner-dark-200 bg-opacity-20 rounded-2xl;
 
     .schedule--date {
       @apply text-water-700 text-opacity-100;
     }
+  }
+
+  .dark {
+    .schedule {
+    @apply bg-mariner-dark-400 bg-opacity-20;
+
+    .schedule--date {
+      @apply text-water-300;
+    }
+
+    .schedule--contents {
+
+      .schedule--subjects {
+
+        .schedule--subject {
+          @apply bg-mariner-dark-900 bg-opacity-80;
+
+          .subject--time {
+            @apply text-mariner-dark-50;
+          }
+
+          .subject--info {
+            @apply w-full text-mariner-dark-100 text-opacity-40;
+
+            b {
+              @apply text-water-500;
+            }
+
+            .subject--name {
+              @apply text-water-200;
+
+              .info {
+                @apply text-water-200 bg-mariner-dark-700 bg-opacity-10;
+
+                &__replaced {
+                  @apply bg-mariner-dark-500 text-water-50;
+                }
+
+                &__homework {
+                  @apply bg-green-600 bg-opacity-60 text-water-50;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .schedule__inactive {
+    @apply bg-mariner-dark-500 bg-opacity-10;
+
+    .schedule--date {
+      @apply text-mariner-light-500 text-opacity-60;
+    }
+  }
+
+  .schedule__active {
+    @apply bg-mariner-dark-300 bg-opacity-40;
+
+    .schedule--date {
+      @apply text-water-100 text-opacity-100;
+    }
+  }
   }
 
 </style>

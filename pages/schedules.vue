@@ -92,7 +92,6 @@
       this.$data.date = this.$moment(Date.now());
     },
     activated() {
-      console.log(this.$fetchState.timestamp)
       if (this.$fetchState.timestamp <= Date.now() - 30000) {
         this.$fetch()
       }
@@ -108,17 +107,13 @@
       @apply mb-6;
     }
     .schedules--controls {
-      @apply flex flex-col md:flex-row gap-4 mb-4 items-center justify-center;
+      @apply flex flex-col md:flex-row gap-2 md:gap-4 mb-6 items-center justify-center;
       p {
-        @apply font-medium text-center flex-shrink-0 flex-grow-0 md:w-2/4;
+        @apply text-lg md:text-base font-medium text-center flex-shrink-0 flex-grow-0 md:w-2/4;
       }
       a.button,
         button {
-          @apply w-full md:w-1/4 text-center bg-mariner-light-200 px-6 py-2 rounded-2xl;
-
-          &:hover {
-            @apply bg-mariner-200;
-          }
+          @apply w-full md:w-1/4 text-center px-6 py-2;
         }
     }
   }

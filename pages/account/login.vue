@@ -25,7 +25,7 @@
         <input v-model="login.password" name="password" type="password" />
       </div>
       <div class="login--buttons">
-        <button type="submit">Войти</button>
+        <button class="button" type="submit">Войти</button>
       </div>
     </form>
     </div>
@@ -86,17 +86,11 @@ export default {
         @apply p-2 text-xl w-32;
       }
       input {
-        @apply bg-mariner-100 p-2;
+        @apply p-2;
       }
     }
     .login--buttons {
       @apply flex items-center justify-center mt-4;
-      button {
-        @apply w-full text-center bg-mariner-light-200 px-6 py-2;
-        &:hover {
-          @apply bg-mariner-100;
-        }
-      }
     }
   }
 }
