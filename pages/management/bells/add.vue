@@ -44,7 +44,7 @@
         if (Object.keys(this.errors).length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$post(`http://localhost:3050/v1/diary/bells`, {
+        this.$axios.$post(`https://api.ryzhenkov.space/v1/diary/bells`, {
           starts: this.starts,
           ends: this.ends,
         }).then((res) => {

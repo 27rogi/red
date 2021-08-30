@@ -37,7 +37,7 @@
     },
     async fetch() {
       this.$data.schedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules/${this.$route.params.id}?extras=replacements`
+        `https://api.ryzhenkov.space/v1/diary/schedules/${this.$route.params.id}?extras=replacements`
       ));
 
       if (this.schedule.replacements) {
@@ -53,7 +53,7 @@
         if(this.problems.length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$delete(`http://localhost:3050/v1/diary/schedules/${this.$route.params.id}`).then((res) => {
+        this.$axios.$delete(`https://api.ryzhenkov.space/v1/diary/schedules/${this.$route.params.id}`).then((res) => {
           this.$router.push({ path: '/management/schedules' });
           this.$toasted.show(`Урок #${this.$route.params.id} успешно удален`, {type: 'success'});
         }).catch((err) => {

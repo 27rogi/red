@@ -95,7 +95,7 @@
     },
     async fetch() {
       this.$data.replacement = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/replacements/${this.$route.params.id}?extras=subject,schedule`
+        `https://api.ryzhenkov.space/v1/diary/replacements/${this.$route.params.id}?extras=subject,schedule`
       ));
 
       if (this.replacement.subject) this.subject.selectedSubject = this.replacement.subject;
@@ -103,7 +103,7 @@
       if (this.replacement.teacher) this.teacher = this.replacement.teacher;
       if (this.replacement.location) this.location = this.replacement.location;
       this.$data.schedule.selectedSchedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules/${this.replacement.replacedSchedule}?extras=subject,bell,replacements`
+        `https://api.ryzhenkov.space/v1/diary/schedules/${this.replacement.replacedSchedule}?extras=subject,bell,replacements`
       ));
     },
     methods: {
@@ -112,7 +112,7 @@
       },
       findSubjects(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
+        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
           response => {
             this.subject.subjects = response.results
             this.isLoading = false
@@ -121,7 +121,7 @@
       findSchedules(query) {
         this.isLoading = true
         this.$axios.$get(
-            `http://localhost:3050/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements`)
+            `https://api.ryzhenkov.space/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements`)
           .then(
             response => {
               this.schedule.schedules = response.results
@@ -151,7 +151,7 @@
         };
 
 
-        this.$axios.$patch(`http://localhost:3050/v1/diary/replacements/${this.$route.params.id}`, patchBody).then((res) => {
+        this.$axios.$patch(`https://api.ryzhenkov.space/v1/diary/replacements/${this.$route.params.id}`, patchBody).then((res) => {
           this.$router.push({ path: '/management/replacements' });
           this.$toasted.show(`Замена #${this.$route.params.id} успешно обновлена`, {type: 'success'});
         }).catch((err) => {

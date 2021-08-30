@@ -45,7 +45,7 @@
     },
     async fetch() {
       this.$data.bell = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/bells/${this.$route.params.id}`
+        `https://api.ryzhenkov.space/v1/diary/bells/${this.$route.params.id}`
       ));
 
       if (this.bell.starts) this.starts = this.bell.starts;
@@ -61,7 +61,7 @@
         if (Object.keys(this.errors).length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$patch(`http://localhost:3050/v1/diary/bells/${this.$route.params.id}`, {
+        this.$axios.$patch(`https://api.ryzhenkov.space/v1/diary/bells/${this.$route.params.id}`, {
           starts: this.starts,
           ends: this.ends,
         }).then((res) => {

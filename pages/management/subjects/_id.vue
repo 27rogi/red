@@ -47,7 +47,7 @@
     },
     async fetch() {
       this.$data.subject = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/subjects/${this.$route.params.id}`
+        `https://api.ryzhenkov.space/v1/diary/subjects/${this.$route.params.id}`
       ));
 
       if (this.subject.name) this.name = this.subject.name;
@@ -64,7 +64,7 @@
         if (Object.keys(this.errors).length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$patch(`http://localhost:3050/v1/diary/subjects/${this.$route.params.id}`, {
+        this.$axios.$patch(`https://api.ryzhenkov.space/v1/diary/subjects/${this.$route.params.id}`, {
           name: this.name,
           teacher: this.teacher,
           location: this.location,

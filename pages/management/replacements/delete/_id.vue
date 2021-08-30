@@ -24,13 +24,13 @@
     },
     async fetch() {
       this.$data.schedule = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/replacements/${this.$route.params.id}?extras=schedule`
+        `https://api.ryzhenkov.space/v1/diary/replacements/${this.$route.params.id}?extras=schedule`
       ));
     },
     methods: {
       processDelete() {
         this.isLoading = true;
-        this.$axios.$delete(`http://localhost:3050/v1/diary/replacements/${this.$route.params.id}`).then((res) => {
+        this.$axios.$delete(`https://api.ryzhenkov.space/v1/diary/replacements/${this.$route.params.id}`).then((res) => {
           this.$router.push({ path: '/management/replacements' });
           this.$toasted.show(`Замена #${this.$route.params.id} успешно удалена`, {type: 'success'});
         }).finally(() => {

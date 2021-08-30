@@ -92,10 +92,10 @@ export default {
          // autoFetch: true
         },
         endpoints: {
-          login: { url: 'http://localhost:3050/v1/auth/login', method: 'post' },
-          refresh: { url: 'http://localhost:3050/v1/auth/refresh-tokens', method: 'post' },
+          login: { url: 'https://api.ryzhenkov.space/v1/auth/login', method: 'post' },
+          refresh: { url: 'https://api.ryzhenkov.space/v1/auth/refresh-tokens', method: 'post' },
           user: false,
-          logout: { url: 'http://localhost:3050/v1/auth/logout', method: 'post' }
+          logout: { url: 'https://api.ryzhenkov.space/v1/auth/logout', method: 'post' }
         },
         // autoLogout: false
       }

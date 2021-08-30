@@ -98,7 +98,7 @@
       },
       findSubjects(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
+        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
           response => {
             this.subject.subjects = response.results
             this.isLoading = false
@@ -106,7 +106,7 @@
       },
       findSchedules(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements`).then(
+        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements`).then(
           response => {
             this.schedule.schedules = response.results
             this.isLoading = false
@@ -134,7 +134,7 @@
         if(this.teacher) postBody.teacher = this.teacher;
         if(this.location) postBody.location = Number(this.location);
 
-        this.$axios.$post(`http://localhost:3050/v1/diary/replacements`, postBody).then((res) => {
+        this.$axios.$post(`https://api.ryzhenkov.space/v1/diary/replacements`, postBody).then((res) => {
           this.$router.push({ path: '/management/replacements' });
           this.$toasted.show(`Замена #${res.replacementId} успешно добавлена`, {type: 'success'});
         }).catch((err) => {

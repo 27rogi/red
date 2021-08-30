@@ -40,7 +40,7 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
     },
     async fetch() {
       const homeworks = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/homeworks?sortBy=homeworkId%3Aasc&limit=9999&page=1&extras=subject`,
+        `https://api.ryzhenkov.space/v1/diary/homeworks?sortBy=homeworkId%3Aasc&limit=9999&page=1&extras=subject`,
       )).results
 
       // sorting homeworks by deadline date

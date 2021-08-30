@@ -48,7 +48,7 @@
 
       const isEven = Math.abs(this.$moment(this.date).week() - this.$moment('01 09', 'DD MM').week()) % 2 === 1
       const schedules = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules?isEven=${isEven}&sortBy=bellId%3Aasc&limit=9999&page=1&extras=bell,subject,replacements,homeworks`,
+        `https://api.ryzhenkov.space/v1/diary/schedules?isEven=${isEven}&sortBy=bellId%3Aasc&limit=9999&page=1&extras=bell,subject,replacements,homeworks`,
       )).results
 
       schedules.forEach((elem) => {

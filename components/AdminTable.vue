@@ -57,7 +57,7 @@ export default {
     if(this.$props.extras) extras = `&extras=${this.$props.extras}`;
 
     this.$data.items = (await this.$axios.$get(
-      `http://localhost:3050/v1/diary/${this.$props.item}?sortBy=${this.$props.sort}%3Aasc&page=${currentPage}&limit=${currentLimit}${extras}`,
+      `https://api.ryzhenkov.space/v1/diary/${this.$props.item}?sortBy=${this.$props.sort}%3Aasc&page=${currentPage}&limit=${currentLimit}${extras}`,
     ))
   },
   watch: {

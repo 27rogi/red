@@ -42,7 +42,7 @@
     },
     async fetch() {
       this.$data.subject = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/subjects/${this.$route.params.id}?extras=homeworks`
+        `https://api.ryzhenkov.space/v1/diary/subjects/${this.$route.params.id}?extras=homeworks`
       ));
 
       if(this.$data.subject.homeworks)

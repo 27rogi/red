@@ -114,7 +114,7 @@
       },
       findSubjects(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
+        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
           response => {
             this.subject.subjects = response.results
             this.isLoading = false
@@ -122,7 +122,7 @@
       },
       findBells(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/bells?sortBy=starts%3Aasc&limit=9999`).then(
+        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/bells?sortBy=starts%3Aasc&limit=9999`).then(
           response => {
             this.bell.bells = response.results
             this.isLoading = false
@@ -138,7 +138,7 @@
         if (Object.keys(this.errors).length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$post(`http://localhost:3050/v1/diary/schedules`, {
+        this.$axios.$post(`https://api.ryzhenkov.space/v1/diary/schedules`, {
           subjectId: this.subject.selectedSubject.subjectId,
           bellId: this.bell.selectedBell.bellId,
           weekDay: this.weekDay.selectedWeekDay.day,

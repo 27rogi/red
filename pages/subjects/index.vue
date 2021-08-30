@@ -29,7 +29,7 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
     },
     async fetch() {
       const subjects = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999&page=1`,
+        `https://api.ryzhenkov.space/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999&page=1`,
       )).results
 
       subjects.sort((currentSubject, nextSubject) => {

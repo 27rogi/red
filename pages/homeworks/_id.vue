@@ -34,7 +34,7 @@ export default {
   },
   async fetch() {
     this.$data.homework = (await this.$axios.$get(
-      `http://localhost:3050/v1/diary/homeworks/${this.$route.params.id}?extras=subject`
+      `https://api.ryzhenkov.space/v1/diary/homeworks/${this.$route.params.id}?extras=subject`
     ));
   },
 }

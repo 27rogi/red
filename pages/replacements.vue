@@ -38,13 +38,13 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
     },
     async fetch() {
       const replacements = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/replacements?sortBy=replacementId%3Aasc&limit=9999&page=1&extras=subject,schedule`,
+        `https://api.ryzhenkov.space/v1/diary/replacements?sortBy=replacementId%3Aasc&limit=9999&page=1&extras=subject,schedule`,
       )).results
       const schedules = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules?sortBy=replacementId%3Aasc&limit=9999&page=1&extras=subject`,
+        `https://api.ryzhenkov.space/v1/diary/schedules?sortBy=replacementId%3Aasc&limit=9999&page=1&extras=subject`,
       )).results
       const bells = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/bells?sortBy=bellId%3Aasc&limit=9999&page=1`,
+        `https://api.ryzhenkov.space/v1/diary/bells?sortBy=bellId%3Aasc&limit=9999&page=1`,
       )).results
 
       // sorting replacements by date

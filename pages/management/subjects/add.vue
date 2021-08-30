@@ -42,7 +42,7 @@
         if (Object.keys(this.errors).length > 0) return;
 
         this.isLoading = true;
-        this.$axios.$post(`http://localhost:3050/v1/diary/subjects`, {
+        this.$axios.$post(`https://api.ryzhenkov.space/v1/diary/subjects`, {
           name: this.name,
           teacher: this.teacher,
           location: this.location,

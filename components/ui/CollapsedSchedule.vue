@@ -83,7 +83,7 @@
               return;
 
             const data = (await this.$axios.$get(
-              `http://localhost:3050/v1/diary/replacements/${replacement.replacementId}?extras=subject`
+              `https://api.ryzhenkov.space/v1/diary/replacements/${replacement.replacementId}?extras=subject`
             ));
             this.$set(schedule, 'replacement', data);
           });

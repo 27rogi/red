@@ -100,7 +100,7 @@
       },
       findSubjects(query) {
         this.isLoading = true
-        this.$axios.$get(`http://localhost:3050/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
+        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/subjects?sortBy=subjectId%3Aasc&limit=9999`).then(
           response => {
             this.subject.subjects = response.results
             this.isLoading = false
@@ -126,7 +126,7 @@
           date: this.date,
         };
 
-        this.$axios.$post(`http://localhost:3050/v1/diary/homeworks`, postBody).then((res) => {
+        this.$axios.$post(`https://api.ryzhenkov.space/v1/diary/homeworks`, postBody).then((res) => {
           if (this.$route.query.diff) {
             this.$router.push({
               path: '/homeworks'

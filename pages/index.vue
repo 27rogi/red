@@ -112,11 +112,11 @@
 
       const isEven = Math.abs(currentDate.week() - this.$moment('01 09', 'DD MM').week()) % 2 === 1
       const schedules = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/schedules?isEven=${isEven}&weekDay=${currentDate.isoWeekday()}&sortBy=bellId%3Aasc&limit=9999&page=1&extras=bell,subject,replacements,homeworks`,
+        `https://api.ryzhenkov.space/v1/diary/schedules?isEven=${isEven}&weekDay=${currentDate.isoWeekday()}&sortBy=bellId%3Aasc&limit=9999&page=1&extras=bell,subject,replacements,homeworks`,
       )).results
 
       const replacements = (await this.$axios.$get(
-        `http://localhost:3050/v1/diary/replacements?limit=9999&sortBy=date%3Aasc&page=1&extras=subject`)).results;
+        `https://api.ryzhenkov.space/v1/diary/replacements?limit=9999&sortBy=date%3Aasc&page=1&extras=subject`)).results;
 
       if (schedules.length <= 0) {
         this.$data.noSchedules = true;
@@ -138,7 +138,7 @@
         if (schedule.homeworks) {
           let homeworkProvider = schedule;
           if(schedule.replacement) {
-            homeworkProvider = await this.$axios.$get(`http://localhost:3050/v1/diary/subjects/${schedule.replacement.replacingSubject}?extras=homeworks`);
+            homeworkProvider = await this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/subjects/${schedule.replacement.replacingSubject}?extras=homeworks`);
           }
 
           const activeHomeworks = [];
