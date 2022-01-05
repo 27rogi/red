@@ -8,7 +8,7 @@
     <span v-if="errors && errors.update" class="field--error">{{errors.update}}</span>
     <h1>Добавление замены</h1>
     <div class="add--field">
-      <p>Заменяющий предмет <span v-if="errors && errors.subject" class="field--error">{{errors.subject}}</span></p>
+      <p>На какой предмет замена<span v-if="errors && errors.subject" class="field--error">{{errors.subject}}</span></p>
       <multiselect id="ajaxSubject" v-model="subject.selectedSubject" :searchable="true" :internal-search="false"
         :show-labels="false" :allow-empty="false" label="name" track-by="subjectId" :options="subject.subjects"
         :loading="isLoading" :options-limit="300" :limit="3" :limit-text="limitText" :max-height="600"
@@ -19,7 +19,13 @@
       </multiselect>
     </div>
     <div class="add--field">
-      <p>Заменяемый урок <span v-if="errors && errors.schedule" class="field--error">{{errors.schedule}}</span>
+      <p>Дата замены <span v-if="errors && errors.date" class="field--error">{{errors.date}}</span></p>
+      <date-picker v-model="date" :lang="{formatLocale: { firstDayOfWeek: 1, }}" value-type="DD/MM/YYYY"
+        format="DD.MM.YYYY" />
+      <span v-if="date">{{$moment(date, 'DD/MM/YYYY').format('DD MMMM YYYY (dddd)')}}</span>
+    </div>
+    <div v-if="date" class="add--field">
+      <p>На каком уроке будет замена<span v-if="errors && errors.schedule" class="field--error">{{errors.schedule}}</span>
       </p>
       <multiselect id="ajaxSchedule" v-model="schedule.selectedSchedule" :searchable="true" :internal-search="false"
         :show-labels="false" :allow-empty="false" label="scheduleId" track-by="scheduleId" :options="schedule.schedules"
@@ -30,12 +36,6 @@
             <template slot="option" slot-scope="props">{{ props.option.subject.name }} ({{even(props.option.isEven)}}) {{days[props.option.weekDay]}} в {{ props.option.bell.starts }}
               (#{{props.option.scheduleId}})</template>
       </multiselect>
-    </div>
-    <div class="add--field">
-      <p>Дата замены <span v-if="errors && errors.date" class="field--error">{{errors.date}}</span></p>
-      <date-picker v-model="date" :lang="{formatLocale: { firstDayOfWeek: 1, }}" value-type="DD/MM/YYYY"
-        format="DD.MM.YYYY" />
-      <span v-if="date">{{$moment(date, 'DD/MM/YYYY').format('DD MMMM YYYY (dddd)')}}</span>
     </div>
     <div class="add--field">
       <p>Заменяющий учитель (не обязательно) <span v-if="errors && errors.teacher"
@@ -106,7 +106,13 @@
       },
       findSchedules(query) {
         this.isLoading = true
-        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/schedules?sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements`).then(
+        let args = 'sortBy=scheduleId%3Aasc&limit=9999&extras=subject,bell,replacements';
+        if(this.date) {
+          const momentDate = this.$moment(this.date, 'DD/MM/YYYY');
+          const isEven = Math.abs(momentDate.week() - this.$moment('01 09', 'DD MM').week()) % 2 === 1;
+          args = `sortBy=scheduleId%3Aasc&limit=9999&isEven=${isEven}&weekDay=${momentDate.isoWeekday()}&extras=subject,bell,replacements`;
+        }
+        this.$axios.$get(`https://api.ryzhenkov.space/v1/diary/schedules?${args}`).then(
           response => {
             this.schedule.schedules = response.results
             this.isLoading = false

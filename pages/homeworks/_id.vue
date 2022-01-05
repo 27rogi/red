@@ -77,4 +77,15 @@ export default {
       }
     }
   }
+
+  .dark .homework--wrapper {
+    .homework {
+      @apply bg-water-dark-800;
+      .homework--added {
+        span {
+          @apply text-water-200;
+        }
+      }
+    }
+  }
 </style>

@@ -4,7 +4,7 @@
       <MenuIcon v-if="!mobileMenu" size="1x" />
       <MinusIcon v-else size="1x" />
     </div>
-    <nav class="sidebar" :class="{ 'sidebar__mobile': mobileMenu }" @click="closeIfMobile">
+    <nav class="sidebar" :class="{ 'sidebar__open': mobileMenu }" @click="closeIfMobile">
       <div class="sidebar--logo">
         <svg viewBox="0 0 352 154" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0.000725848 108.203C-0.014167 111.093 0.20014 113.979 0.641629 116.835C1.35269 121.846 3.0192 126.675 5.55067 131.058C9.01709 137.077 14.1698 141.95 20.3732 145.076C26.7629 148.201 33.7966 149.785 40.9093 149.698V124.485C37.5739 124.555 34.2597 123.937 31.1731 122.671C28.4986 121.583 26.2166 119.71 24.6277 117.299C24.3652 116.905 24.1284 116.495 23.9186 116.071C22.8215 113.909 22.2647 111.514 22.2959 109.09C22.2515 107 22.6271 104.922 23.4004 102.981C23.5641 102.585 23.7414 102.19 23.9186 101.835C24.5324 100.639 25.3386 99.5518 26.305 98.617C27.4769 97.4791 28.869 96.5928 30.3958 96.0125C31.8837 95.4365 33.4639 95.1361 35.0594 95.1261C37.6775 95.1132 40.271 95.6328 42.682 96.6534C45.284 97.8086 47.7083 99.3284 49.8819 101.167C52.2955 103.158 55.0228 105.503 58.0636 108.203L104.999 153.557V50.6994L0.000725848 0V108.203ZM83.3452 66.5583H83.1815V108.135L61.5 83.9308C57.8399 79.6391 53.5005 75.9768 48.6547 73.09C43.9582 70.3141 38.5919 68.8759 33.1367 68.931C29.7376 68.9439 26.3675 69.5579 23.1823 70.7446V36.2859L83.3452 66.5583Z" fill="#5B8ADC"/>
@@ -28,7 +28,7 @@
         </a>
       </div>
       <div class="sidebar--footer">
-        <p>Разработал Rogi27, версия от <b>15.08.2021</b></p>
+        <p>Разработал Rogi27, версия от <b>02.09.2021</b></p>
       </div>
     </nav>
   </div>
@@ -177,9 +177,9 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar {
-  @apply transition-opacity overflow-auto z-30 w-[20%] hidden opacity-0 md:opacity-100 fixed md:flex flex-col h-full bg-opacity-5 bg-mariner-light-600 rounded-r-2xl;
-  &__mobile {
-    @apply opacity-100 flex fixed w-full bg-mariner-light-100;
+  @apply transition-all duration-100 ease-in transform-gpu -translate-x-full md:translate-x-0 flex w-full overflow-auto z-50 md:w-[20%] md:opacity-100 fixed md:flex flex-col h-full bg-mariner-light-100 rounded-r-2xl;
+  &__open {
+    @apply translate-x-0;
   }
   .sidebar--logo {
     @apply flex flex-col items-center justify-center p-6 mb-6 gap-4;
@@ -218,9 +218,7 @@ export default {
 }
 
 .dark .sidebar {
-  &__mobile {
-    @apply opacity-100 bg-mariner-dark-900;
-  }
+  @apply bg-mariner-dark-900;
   .sidebar--logo {
     svg {
       .theme {

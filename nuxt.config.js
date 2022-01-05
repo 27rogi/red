@@ -1,12 +1,13 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'RogiDiary',
+    title: 'Электронный дневник',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      { name: 'format-detection', content: 'telephone=no' },
+      { name: 'theme-color', content: '#2f6ace'},
+      { hid: 'description', name: 'description', content: 'Электронный дневник для учащихся в группе 3ИП-11-19, позволяет смотреть расписание, подсказывает время до начала и конца урока, позволяет добавлять домашнее задание и оповещает о начале уроков в ВК.' },
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -17,6 +18,16 @@ export default {
       {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap',
+      },
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/favicon.svg',
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        href: '/favicon.png',
       },
     ]
   },
@@ -33,7 +44,8 @@ export default {
     { src: '~/plugins/vue-select', ssr: false },
     { src: '~/plugins/vue-good-table', ssr: false },
     { src: '~/plugins/vue-toasted', ssr: false },
-    { src: '~/plugins/vue-tippy', ssr: false }
+    { src: '~/plugins/vue-tippy', ssr: false },
+    { src: '~/plugins/vue-visibility', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -64,6 +76,7 @@ export default {
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/auth-next',
+    '@nuxtjs/sitemap'
   ],
 
   colorMode: {
@@ -120,4 +133,8 @@ export default {
       ],
     },
   },
+
+  server: {
+    host: '0.0.0.0'
+  }
 }

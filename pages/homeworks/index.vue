@@ -92,4 +92,24 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
     }
   }
 
+  .dark .homework {
+        @apply bg-water-dark-600 bg-opacity-30;
+
+        .homework--header {
+          @apply bg-water-dark-600 bg-opacity-50;
+
+          .homework--name {
+            @apply text-water-dark-50;
+          }
+        }
+
+        .homework--info {
+          @apply text-water-dark-200;
+
+          .info--heading {
+            @apply text-water-dark-50;
+          }
+        }
+      }
+
 </style>

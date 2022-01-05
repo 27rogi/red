@@ -83,6 +83,9 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
         })
       });
     },
+    head: {
+      title: 'Замены в расписании'
+    }
   }
 
 </script>
@@ -110,6 +113,32 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
 
           .replacement--title {
             @apply inline-flex gap-2 justify-center items-center text-water-600 text-xl font-semibold;
+          }
+        }
+      }
+    }
+  }
+
+  .dark .replacements {
+    .replacement {
+      @apply bg-water-dark-800;
+
+      .replacement--date {
+        @apply text-mariner-dark-200;
+      }
+
+      .replacement--item {
+        @apply bg-mariner-dark-900;
+
+        .replacement--info {
+          @apply text-mariner-light-300;
+
+          b {
+            @apply text-mariner-dark-200;
+          }
+
+          .replacement--title {
+            @apply text-mariner-dark-200;
           }
         }
       }

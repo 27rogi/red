@@ -55,6 +55,9 @@
         this.schedules[elem.weekDay].push(elem)
       })
     },
+    head: {
+      title: 'Расписание предметов'
+    },
     computed: {
       weekDates() {
         const start = this.$moment(this.date).startOf('isoWeek')

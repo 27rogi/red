@@ -8,7 +8,7 @@
     <div v-if="!collapsed" class="schedule--contents">
       <div v-if="$props.schedules.length > 0" class="schedule--subjects">
         <div v-for="schedule in $props.schedules" :key="schedule.scheduleId" class="schedule--subject">
-          <tippy v-if="schedule.replacement" :interactive="true" :to="schedule.replacement.replacementId">
+          <tippy v-if="schedule.replacement" :interactive="true" :to="schedule.weekDay+schedule.scheduleId+schedule.weekDay">
             <p>Замена предмета <b>{{ schedule.subject.name }}</b></p>
             <p>Преподаватель <b>{{ schedule.subject.teacher }}</b></p>
             <p>Кабинет <b>№{{ schedule.subject.location }}</b></p>
@@ -21,9 +21,9 @@
           </div>
           <div v-if="schedule.replacement && schedule.replacement.subject" class="subject--info">
             <p class="subject--name">{{ schedule.replacement.subject.name }} <span
-                :name="schedule.replacement.replacementId" class="info info__replaced">Замена</span> <span
                 v-if="hasHomework(schedule)" :name="$moment(schedule.bell.starts, 'HH:mm').format('HHmm')+schedule.weekDay+schedule.subjectId" class="info info__homework">Есть
-                домашка</span></p>
+                домашка</span> <span
+                :name="schedule.weekDay+schedule.scheduleId+schedule.weekDay" class="info info__replaced">Замена</span></p>
             <p v-if="schedule.replacement.teacher">Преподаватель <b>{{schedule.replacement.teacher}}</b></p>
             <p v-else>Преподаватель <b>{{schedule.replacement.subject.teacher}}</b></p>
             <p v-if="schedule.replacement.location">Кабинет <b>№{{schedule.replacement.location}}</b></p>
@@ -91,7 +91,7 @@
         if (schedule.homeworks) {
           const activeHomeworks = [];
           schedule.homeworks.forEach((homework) => {
-            if (this.$moment(scheduleDate).isBetween(this.$moment(homework.created).isoWeekday(-2), this.$moment(homework.date, 'DD/MM/YYYY'))) activeHomeworks.push(homework);
+            if (this.$moment(scheduleDate).isBetween(this.$moment(homework.created).isoWeekday(-2), this.$moment(homework.date, 'DD/MM/YYYY'), undefined, '[]')) activeHomeworks.push(homework);
           });
           this.$set(schedule, 'homeworks', activeHomeworks);
         }

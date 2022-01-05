@@ -62,4 +62,21 @@ import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
     }
   }
 
+  .dark .subjects {
+    .subject {
+      @apply bg-water-dark-800;
+
+      .subject--name {
+        @apply text-mariner-dark-200;
+      }
+      .subject--arrow {
+        @apply bg-water-dark-700;
+      }
+
+      &:hover {
+        @apply bg-water-dark-700;
+      }
+    }
+  }
+
 </style>

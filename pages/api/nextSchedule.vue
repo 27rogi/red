@@ -1,113 +1,47 @@
 <template>
-  <div v-visibility-change="visibilityChanged">
-    <transition name="fade" mode="out-in">
       <uiLoader v-if="$fetchState.pending" />
       <p v-else-if="$fetchState.error">{{ $fetchState.error }}</p>
       <div v-else class="today">
-        <h1>Сегодняшний <span v-if="isEven">четный</span><span v-else>нечетный</span> день,
-          {{$moment(Date.now()).format('dddd DD MMMM')}}</h1>
         <!-- Subjects -->
         <div v-if="!noSchedules" class="today--blocks">
           <div class="today--block">
-            <transition name="fade" mode="out-in">
-              <div v-if="currentSchedule" class="today--subject">
-                <h2>Текущий урок <span v-if="isReplaced(currentSchedule)">(замена)</span></h2>
+              <div v-if="schedules.length > 0" class="today--subject">
+                <h2>Через 5 минут начнется урок</h2>
                 <div class="today--info">
-                  <nuxt-link
-                    :to="`/subjects/${(isReplaced(currentSchedule)) ? currentSchedule.replacement.subject.subjectId : currentSchedule.subjectId}`"
-                    class="today--schedule today--schedule__current">
-                    <h2 v-if="isReplaced(currentSchedule)">{{currentSchedule.replacement.subject.name}}</h2>
-                    <h2 v-else>{{currentSchedule.subject.name}}</h2>
-                    <p>Кабинет <b>№{{getLocation(currentSchedule)}}</b></p>
-                    <p>Преподаватель: <b>{{getTeacher(currentSchedule)}}</b></p>
-                  </nuxt-link>
-                  <p>До окончания пары осталось <b>{{ timeLeft }}</b></p>
-                </div>
-              </div>
-              <div v-else-if="!currentSchedule && schedules.length > 0" class="today--subject">
-                <h2>Следующий урок <span v-if="isReplaced(schedules[0])">(замена)</span></h2>
-                <div class="today--info">
-                  <nuxt-link
-                    :to="`/subjects/${(isReplaced(schedules[0])) ? schedules[0].replacement.subject.subjectId : schedules[0].subjectId}`"
+                  <div
                     class="today--schedule">
-                    <h2 v-if="isReplaced(schedules[0])">{{schedules[0].replacement.subject.name}}</h2>
+                    <h2 v-if="isReplaced(schedules[0])">{{schedules[0].replacement.subject.name}} (замена)</h2>
                     <h2 v-else>{{schedules[0].subject.name}}</h2>
-                    <p>Кабинет <b>№{{getLocation(schedules[0])}}</b></p>
-                    <p>Преподаватель: <b>{{getTeacher(schedules[0])}}</b></p>
-                  </nuxt-link>
-                  <p>До начала пары осталось <b>{{ timeLeft }}</b></p>
+                    <p>🗺️ Кабинет <b>№{{getLocation(schedules[0])}}</b></p>
+                    <p>🧑‍🏫 Преподаватель: <b>{{getTeacher(schedules[0])}}</b></p>
+                    <p>⏰ Начало урока в <b>{{schedules[0].bell.starts}}</b></p>
+                    <p v-if="schedules[0].homeworks.length > 0">🙀 По этому уроку есть {{schedules[0].homeworks.length}} домашних заданий!</p>
+                  </div>
                 </div>
               </div>
               <div v-else class="today--subject today--block__empty">
-                <h2 class="empty">Уроки на сегодня закончились</h2>
+                <h2 class="empty">🙀 Уроки на сегодня закончились 🥵</h2>
               </div>
-            </transition>
-          </div>
-          <!-- Homeworks -->
-          <div class="today--block">
-            <transition name="fade" mode="out-in">
-              <div v-if="currentSchedule && currentSchedule.homeworks && currentSchedule.homeworks.length > 0"
-                class="today--subject">
-                <h2>Домашнее задание</h2>
-                <div class="today--info">
-                  <nuxt-link v-for="homework in currentSchedule.homeworks" :key="homework.homeworkId"
-                    :to="`/subjects/${homework.homeworkId}`" class="today--homework">
-                    <h2>Задание до {{$moment(homework.date, 'DD/MM/YYYY').format('DD MMMM')}}</h2>
-                    <p><b>Задано</b>: {{$moment(homework.created).format('DD MMMM')}}</p>
-                    <p><b>Цель задания</b>:</p>
-                    <p>{{homework.mission}}</p>
-                  </nuxt-link>
-                </div>
-              </div>
-              <div v-else-if="!currentSchedule && schedules.length > 0 && schedules[0].homeworks.length > 0"
-                class="today--subject">
-                <h2>Домашнее задание</h2>
-                <div class="today--info">
-                  <nuxt-link v-for="homework in schedules[0].homeworks" :key="homework.homeworkId"
-                    :to="`/subjects/${homework.homeworkId}`" class="today--homework">
-                    <h2>Задание до {{$moment(homework.date, 'DD/MM/YYYY').format('DD MMMM')}}</h2>
-                    <p><b>Задано</b>: {{$moment(homework.created).format('DD MMMM')}}</p>
-                    <p><b>Цель задания</b>:</p>
-                    <p>{{homework.mission}}</p>
-                  </nuxt-link>
-                </div>
-              </div>
-              <div v-else-if="(currentSchedule && currentSchedule.homeworks === 0) || schedules.length > 0">
-                <h2 class="empty">Домашнего задания к этому предмету нет</h2>
-              </div>
-              <div v-else class="today--subject">
-                <h2 class="empty">Домашнее задание закончилось</h2>
-              </div>
-            </transition>
           </div>
         </div>
         <div v-else>
           <h1>Уроков сегодня нет :)</h1>
         </div>
       </div>
-    </transition>
-  </div>
 </template>
 
 <script>
-  // сделать подсветку урока который скоро начнется и текущего урока
   export default {
+    layout: 'api',
     data() {
       return {
         noSchedules: false,
         schedules: null,
-        currentSchedule: null,
-        scheduleTimeLeft: null,
         timer: null,
         timeoutTimer: null,
       }
     },
     async fetch() {
-      this.$data.currentSchedule = null;
-      this.$data.scheduleTimeLeft = null;
-      this.$data.isStarting = false;
-      this.$data.noSchedules = false;
-
       const currentDate = this.$moment(Date.now());
 
       const isEven = Math.abs(currentDate.week() - this.$moment('01 09', 'DD MM').week()) % 2 === 1
@@ -175,12 +109,6 @@
       const filtered = schedules.filter((schedule, index) => {
         if (currentDate.isBetween(this.$moment(schedule.bell.starts, 'HH:mm'), this.$moment(schedule.bell.ends,
             'HH:mm'), undefined, '[]')) {
-          this.$data.currentSchedule = schedule;
-
-          const endTime = this.$moment(schedule.bell.ends, 'HH:mm').add('1', 'minute');
-          const startTime = currentDate;
-          this.$data.scheduleTimeLeft = this.calculateTimeLeft(endTime, startTime);
-
           return true;
         }
 
@@ -190,12 +118,6 @@
 
         return false;
       });
-
-      if (!this.$data.scheduleTimeLeft && filtered.length > 0) {
-        const endTime = this.$moment(filtered[0].bell.starts, 'HH:mm').add('1', 'minute');
-        const startTime = currentDate;
-        this.$data.scheduleTimeLeft = this.calculateTimeLeft(endTime, startTime);
-      }
 
       this.$data.schedules = filtered;
     },
@@ -280,46 +202,35 @@
 
 <style lang="scss">
   .today {
+    width: 600px;
     @apply flex flex-col gap-2;
 
     .today--blocks {
       @apply flex flex-col lg:flex-row gap-6 items-start;
 
       .today--block {
-        @apply flex-1 w-full lg:w-1/2 bg-mariner-100 p-6 rounded-2xl font-medium;
+        @apply flex-1 w-full lg:w-1/2 bg-mariner-dark-900 p-4 rounded-2xl font-medium;
 
         h2 {
-          @apply text-water-600 font-semibold text-2xl mb-4;
+          @apply text-water-100 font-semibold text-lg mb-4;
           &.empty {
             @apply mb-0;
           }
         }
 
         .today--info {
-          @apply flex flex-col gap-4 text-water-500;
+          @apply flex flex-col gap-4 text-water-100;
 
           h2 {
             @apply text-xl;
           }
 
           b {
-            @apply text-water-700;
+            @apply text-mariner-light-400;
           }
 
           .today--schedule {
-            @apply -m-2 p-4 bg-water-200 rounded-2xl;
-
-            &__current {
-              @apply bg-mariner-500 text-white text-opacity-60;
-
-              h2 {
-                @apply text-white;
-              }
-
-              b {
-                @apply text-white;
-              }
-            }
+            @apply -m-2 p-4 bg-water-dark-700 rounded-2xl;
           }
 
           .today--homework {

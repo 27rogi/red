@@ -11,7 +11,7 @@
       <p class="subject--title">{{subject.name}}</p>
       <p class="subject--data">Преподаватель: <span>{{subject.teacher}}</span></p>
       <p class="subject--data">Кабинет: №<span>{{subject.location}}</span></p>
-      <div class="subject--homework">
+      <div v-if="subject.homeworks.length > 0" class="subject--homework">
         <p class="subject--data">Домашнее задание</p>
       <nuxt-link v-for="homework in subject.homeworks" :key="homework.homeworkId"
         :to="{path: `/homeworks/${homework.homeworkId}`}">
@@ -115,6 +115,39 @@
 
         &:hover {
           @apply opacity-80;
+        }
+      }
+    }
+  }
+
+  .dark .subject--wrapper {
+
+    .subject {
+      @apply bg-water-dark-800;
+
+      .subject--data {
+        span {
+          @apply text-mariner-light-200 text-opacity-80;
+        }
+      }
+
+      .homework {
+        @apply bg-water-dark-600 bg-opacity-30;
+
+        .homework--header {
+          @apply bg-water-dark-600 bg-opacity-50;
+
+          .homework--name {
+            @apply text-water-dark-50;
+          }
+        }
+
+        .homework--info {
+          @apply text-water-dark-200;
+
+          .info--heading {
+            @apply text-water-dark-50;
+          }
         }
       }
     }
