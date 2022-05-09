@@ -14,20 +14,20 @@
       <p>Вы неправильно указали почту или пароль, возможно такого пользователя не существует.</p>
     </div>
     <div class="login--form">
-    <form @submit.prevent="userLogin">
-      <h2>Вход в аккаунт</h2>
-      <div class="login--field">
-        <label>Почта</label>
-        <input v-model="login.email" name="login" type="email" />
-      </div>
-      <div class="login--field">
-        <label>Пароль</label>
-        <input v-model="login.password" name="password" type="password" />
-      </div>
-      <div class="login--buttons">
-        <button class="button" type="submit">Войти</button>
-      </div>
-    </form>
+      <form @submit.prevent="userLogin">
+        <h2>Вход в аккаунт</h2>
+        <div class="login--field">
+          <label>Почта</label>
+          <input v-model="login.email" name="login" type="email" />
+        </div>
+        <div class="login--field">
+          <label>Пароль</label>
+          <input v-model="login.password" name="password" type="password" />
+        </div>
+        <div class="login--buttons">
+          <button class="button" type="submit">Войти</button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -65,32 +65,32 @@ export default {
 
 <style lang="scss">
 .login {
-  @apply h-full flex flex-col gap-4 items-center justify-center font-medium;
+  @apply flex flex-col font-medium h-full gap-4 items-center justify-center;
   .login--message {
-    @apply bg-mariner-100 rounded-2xl flex flex-col gap-2 p-6;
+    @apply flex flex-col bg-primary-100 rounded-2xl p-6 gap-2;
     h6 {
       @apply text-xl;
     }
     &__error {
-      @apply text-white bg-red-600;
+      @apply bg-red-600 text-white;
     }
   }
   .login--form {
-    @apply bg-mariner-light-50 rounded-2xl flex flex-col gap-4 p-6;
+    @apply flex flex-col bg-primary-50 rounded-2xl p-6 gap-4;
     h2 {
-      @apply text-center text-2xl font-semibold pb-4;
+      @apply font-semibold text-center pb-4 text-2xl;
     }
     .login--field {
-      @apply flex flex-row items-center gap-4;
+      @apply flex flex-row gap-4 items-center;
       label {
-        @apply p-2 text-xl w-32;
+        @apply text-xl p-2 w-32;
       }
       input {
         @apply p-2;
       }
     }
     .login--buttons {
-      @apply flex items-center justify-center mt-4;
+      @apply flex mt-4 items-center justify-center;
     }
   }
 }

@@ -6,7 +6,7 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { name: 'format-detection', content: 'telephone=no' },
-      { name: 'theme-color', content: '#2f6ace'},
+      { name: 'theme-color', content: '#2f6ace' },
       { hid: 'description', name: 'description', content: 'Электронный дневник для учащихся в группе 3ИП-11-19, позволяет смотреть расписание, подсказывает время до начала и конца урока, позволяет добавлять домашнее задание и оповещает о начале уроков в ВК.' },
     ],
     link: [
@@ -17,7 +17,7 @@ export default {
       },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap',
       },
       {
         rel: 'icon',
@@ -32,6 +32,13 @@ export default {
     ]
   },
 
+  env: {
+    baseUrl:
+      process.env.NODE_ENV === 'dev'
+        ? 'http://localhost'
+        : 'https://api.ryzhenkov.space'
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '~/assets/base.scss',
@@ -41,6 +48,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '~/plugins/vue-ohicons', ssr: false },
     { src: '~/plugins/vue-select', ssr: false },
     { src: '~/plugins/vue-good-table', ssr: false },
     { src: '~/plugins/vue-toasted', ssr: false },
@@ -53,14 +61,13 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
+    'nuxt-webpack-optimisations',
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
-    // https://go.nuxtjs.dev/stylelint
-    '@nuxtjs/stylelint-module',
     // https://go.nuxtjs.dev/tailwindcss
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/moment',
     '@nuxtjs/color-mode',
+    '@nuxtjs/composition-api/module',
   ],
 
   moment: {
@@ -69,20 +76,31 @@ export default {
     defaultTimezone: 'Europe/Moscow'
   },
 
+  modern: true,
+
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxt/postcss8',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
     '@nuxtjs/auth-next',
-    '@nuxtjs/sitemap'
+    '@nuxtjs/sitemap',
+    '@nuxtjs/device',
+    '@luxdamore/nuxt-prune-html',
+    'nuxt-precompress',
   ],
 
   colorMode: {
     classSuffix: '',
     fallback: 'light',
     preference: 'light',
+  },
+
+  transition: {
+    name: 'fade',
+    mode: 'out-in'
   },
 
   auth: {
@@ -97,18 +115,34 @@ export default {
         },
         refreshToken: {
           property: 'tokens.refresh.token',
-          data: 'refresh_token',
+          data: 'refreshToken',
           maxAge: 60 * 60 * 24 * 30
         },
         user: {
-          property: 'user',
-         // autoFetch: true
+          property: false,
+          autoFetch: true
         },
         endpoints: {
-          login: { url: 'https://api.ryzhenkov.space/v1/auth/login', method: 'post' },
-          refresh: { url: 'https://api.ryzhenkov.space/v1/auth/refresh-tokens', method: 'post' },
-          user: false,
-          logout: { url: 'https://api.ryzhenkov.space/v1/auth/logout', method: 'post' }
+          login: {
+            url: (process.env.NODE_ENV === 'dev'
+              ? 'http://localhost'
+              : 'https://api.ryzhenkov.space') + '/v1/auth/login', method: 'post'
+          },
+          refresh: {
+            url: (process.env.NODE_ENV === 'dev'
+              ? 'http://localhost'
+              : 'https://api.ryzhenkov.space') + '/v1/auth/refresh-tokens', method: 'post'
+          },
+          user: {
+            url: (process.env.NODE_ENV === 'dev'
+              ? 'http://localhost'
+              : 'https://api.ryzhenkov.space') + '/v1/users/user', method: 'get'
+          },
+          logout: {
+            url: (process.env.NODE_ENV === 'dev'
+              ? 'http://localhost'
+              : 'https://api.ryzhenkov.space') + '/v1/auth/logout', method: 'post'
+          }
         },
         // autoLogout: false
       }
@@ -127,6 +161,12 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    postcss: {
+      plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
+      },
+    },
     babel: {
       plugins: [
         ['@babel/plugin-proposal-private-property-in-object', { loose: true }]
@@ -134,7 +174,5 @@ export default {
     },
   },
 
-  server: {
-    host: '0.0.0.0'
-  }
+
 }

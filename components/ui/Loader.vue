@@ -1,18 +1,7 @@
 <template>
-    <div class="loader">
+  <div class="loader">
     <div class="loader--item">
-      <FulfillingSquareSpinner
-        v-if="$colorMode.value === 'light'"
-        :animation-duration="4000"
-        :size="80"
-        color="#150029"
-      />
-      <FulfillingSquareSpinner
-        v-else
-        :animation-duration="4000"
-        :size="80"
-        color="#4e81da"
-      />
+      <FulfillingSquareSpinner :animation-duration="4000" :size="80" color="#fff" />
       <p>Идет загрузка информации</p>
     </div>
   </div>
@@ -30,21 +19,11 @@ export default {
 
 <style lang="scss">
 .loader {
-  @apply z-40 flex flex-col justify-center items-center backdrop-filter backdrop-blur-sm bg-mariner-light-200 bg-opacity-20 absolute inset-0;
+  @apply rounded-md flex flex-col bg-background-100/10 py-6 inset-0 z-40 justify-center items-center relative;
   .loader--item {
-    @apply flex items-center flex-col z-50;
+    @apply flex flex-col z-50 items-center;
     p {
-      color: #150029;
-      @apply p-6 text-xl font-semibold;
-    }
-  }
-}
-
-.dark .loader {
-  @apply bg-mariner-dark-800 bg-opacity-20;
-  .loader--item {
-    p {
-      @apply text-mariner-light-50;
+      @apply font-semibold mt-4 text-xl text-primary-50;
     }
   }
 }

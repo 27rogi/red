@@ -2,21 +2,45 @@
   <div>
     <transition name="fade" mode="out-in">
       <uiLoader v-if="$fetchState.pending" />
-      <p v-else-if="$fetchState.error">{{ $fetchState.error }}</p>
+      <p
+        v-else-if="$fetchState.error && $fetchState.error.message !== 'Request failed with status code 404'"
+      >{{ $fetchState.error }}</p>
       <div v-else class="replacements">
-        <h1>Замены в расписании</h1>
-        <div v-if="Object.keys(replacements).length === 0" class="replacement">
+        <h1 class="page-title">Замены в расписании на {{ currentDate.format('DD MMMM') }}</h1>
+        <div v-if="replacements.length === 0" class="replacement">
           <h2 class="replacement--date">Замены отсутствуют!</h2>
         </div>
-        <div v-for="(value, index) in replacements" v-else :key="index" class="replacement">
-          <h2 class="replacement--date">{{ $moment(index, 'YYYYMMDD').format('DD MMMM') }}</h2>
-          <div v-for="replace in value" :key="replace.replacementId" class="replacement--item">
-            <div class="replacement--info">
-              <p class="replacement--title">{{replace.schedule.subject.name}} <ArrowNarrowRightIcon /> {{replace.subject.name}}</p>
-              <p v-if="replace.teacher">Преподаватель <b>{{replace.teacher}}</b></p>
-              <p v-else>Преподаватель <b>{{replace.schedule.subject.teacher}}</b></p>
-              <p v-if="replace.location">Кабинет <b>№{{replace.location}}</b></p>
-              <p v-else>Кабинет <b>№{{replace.schedule.subject.location}}</b></p>
+        <div v-else class="replacement">
+          <div v-for="(subject, index) in replacements" :key="index" class="replacement--item">
+            <div class="replacement--original">
+              <p class="replacement--title">
+                <span>{{ subject.subject.name }}</span>
+              </p>
+              <div class="replacement__teacher">
+                <v-icon name="md-face-twotone" />
+                <p>{{ subject.subject.teacher }}</p>
+              </div>
+              <div class="replacement__location">
+                <v-icon name="md-locationon-twotone" />
+                <p>Кабинет №{{ subject.subject.location }}</p>
+              </div>
+            </div>
+            <div class="replacement--icon">
+              <v-icon name="md-arrowrightalt-twotone" scale="2" />
+              <v-icon class="mobile" name="md-arrowdownward-twotone" scale="1" />
+            </div>
+            <div class="replacement--current">
+              <p class="replacement--title">
+                <span>{{ subject.replacement.subject.name }}</span>
+              </p>
+              <div class="replacement__teacher">
+                <v-icon name="md-face-twotone" />
+                <p>{{ subject.replacement.teacher ? subject.replacement.teacher : subject.replacement.subject.teacher }}</p>
+              </div>
+              <div class="replacement__location">
+                <v-icon name="md-locationon-twotone" />
+                <p>Кабинет №{{ subject.replacement.location ? subject.replacement.location : subject.replacement.subject.location }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -26,123 +50,76 @@
 </template>
 
 <script>
-import { ArrowNarrowRightIcon } from "@vue-hero-icons/outline"
-  export default {
-    components: {
-      ArrowNarrowRightIcon,
-    },
-    data() {
-      return {
-        replacements: {},
-      }
-    },
-    async fetch() {
-      const replacements = (await this.$axios.$get(
-        `https://api.ryzhenkov.space/v1/diary/replacements?sortBy=replacementId%3Aasc&limit=9999&page=1&extras=subject,schedule`,
-      )).results
-      const schedules = (await this.$axios.$get(
-        `https://api.ryzhenkov.space/v1/diary/schedules?sortBy=replacementId%3Aasc&limit=9999&page=1&extras=subject`,
-      )).results
-      const bells = (await this.$axios.$get(
-        `https://api.ryzhenkov.space/v1/diary/bells?sortBy=bellId%3Aasc&limit=9999&page=1`,
-      )).results
-
-      // sorting replacements by date
-      replacements.sort((currentReplacement, nextReplacement) => {
-        const currentDate = this.$moment(currentReplacement.date, 'DD/MM');
-        const nextDate = this.$moment(nextReplacement.date, 'DD/MM');
-
-        if (!currentDate.isAfter(nextDate)) return -1;
-        else if (currentDate.isAfter(nextDate)) return 1;
-        else return 0;
-      });
-
-      replacements.forEach((replacement) => {
-        if(this.$moment(replacement.date, 'DD/MM/YYYY').isBefore(Date.now())) return;
-        const date = this.$moment(replacement.date, 'DD/MM/YYYY').format("YYYYMMDD");
-
-        if (!this.replacements[date]) {
-          this.replacements[date] = [];
-        }
-
-        bells.forEach((bell) => {
-          if (replacement.schedule.bellId === bell.bellId) replacement.bell = bell;
-        });
-        schedules.forEach((schedule) => {
-          if (replacement.schedule.scheduleId === schedule.scheduleId) replacement.schedule = schedule;
-        });
-        this.replacements[date].push(replacement);
-
-        this.replacements[date].sort((currentReplacement, nextReplacement) => {
-          const currentTime = this.$moment(currentReplacement.bell.starts, 'HH:mm');
-          const nextTime = this.$moment(nextReplacement.bell.starts, 'HH:mm');
-
-          if (!currentTime.isAfter(nextTime)) return -1;
-          else if (currentTime.isAfter(nextTime)) return 1;
-          else return 0;
-        })
-      });
-    },
-    head: {
-      title: 'Замены в расписании'
+export default {
+  data() {
+    return {
+      currentDate: null,
+      replacements: [],
     }
+  },
+  async fetch() {
+    this.$data.currentDate = this.$moment();
+    const schedule = (await this.$axios.$get(
+      `${process.env.baseUrl}/v1/diary/schedules/date/${this.currentDate.clone().startOf("isoWeek").format("DD-MM-YYYY")}`,
+    ))
+    if (schedule) {
+      const subjects = schedule.days[this.currentDate.isoWeekday()].subjects;
+      if (subjects.length > 0) {
+        subjects.forEach((subject) => {
+          if (subject.replacement) this.replacements.push(subject);
+        })
+      }
+    }
+  },
+  head: {
+    title: 'Замены в расписании'
   }
+}
 
 </script>
 
 <style lang="scss" scoped>
-  .replacements {
-    @apply flex flex-col gap-4;
+.replacements {
+  @apply flex flex-col gap-4;
 
-    .replacement {
-      @apply flex flex-col gap-2 p-4 bg-mariner-500 bg-opacity-10 rounded-2xl;
+  .replacement {
+    @apply flex flex-col bg-background-200/10 bg-opacity-10 rounded-2xl p-2 gap-2 md:p-4;
 
-      .replacement--date {
-        @apply px-2 py-2 font-semibold text-xl text-water-600;
+    .replacement--date {
+      @apply font-semibold text-xl py-2 px-2 text-primary-600;
+    }
+
+    .replacement--item {
+      @apply flex flex-col gap-2 items-center md:flex-row;
+
+      .replacement--original,
+      .replacement--current {
+        @apply bg-background-100/10 rounded-2xl w-full p-4 md:w-5/12;
       }
 
-      .replacement--item {
-        @apply bg-mariner-light-100 p-4 flex flex-col items-start rounded-2xl;
-
-        .replacement--info {
-          @apply text-water-500 font-medium;
-
-          b {
-            @apply text-water-800 font-medium;
-          }
-
-          .replacement--title {
-            @apply inline-flex gap-2 justify-center items-center text-water-600 text-xl font-semibold;
-          }
+      .replacement--icon {
+        @apply flex m-auto w-full justify-center md:w-2/12;
+        svg.mobile {
+          @apply flex md:hidden;
         }
+        svg:not(.mobile) {
+          @apply hidden md:flex;
+        }
+      }
+
+      b {
+        @apply font-medium text-primary-800;
+      }
+
+      .replacement__location,
+      .replacement__teacher {
+        @apply flex flex-row gap-1 items-center;
+      }
+
+      .replacement--title {
+        @apply font-semibold text-xl text-primary-600 gap-2 inline-flex justify-center items-center;
       }
     }
   }
-
-  .dark .replacements {
-    .replacement {
-      @apply bg-water-dark-800;
-
-      .replacement--date {
-        @apply text-mariner-dark-200;
-      }
-
-      .replacement--item {
-        @apply bg-mariner-dark-900;
-
-        .replacement--info {
-          @apply text-mariner-light-300;
-
-          b {
-            @apply text-mariner-dark-200;
-          }
-
-          .replacement--title {
-            @apply text-mariner-dark-200;
-          }
-        }
-      }
-    }
-  }
-
+}
 </style>

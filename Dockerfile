@@ -1,17 +1,19 @@
-FROM node:16-alpine
+FROM node:16.13-alpine
 
-RUN apk --no-cache add --virtual native-deps \
-  g++ gcc libgcc libstdc++ linux-headers make python3
+RUN mkdir -p /usr/src/node-app && chown -R node:node /usr/src/node-app
 
-WORKDIR /usr/src/app
-COPY ./ /usr/src/app
+WORKDIR /usr/src/node-app
+
+COPY package.json yarn.lock ./
+
+USER node
 
 ENV NUXT_HOST 0.0.0.0
 ENV NUXT_PORT 80
 
-RUN npm install --quiet node-gyp -g &&\
-  npm install --quiet && \
-  apk del native-deps
+RUN yarn install --pure-lockfile
+
+COPY --chown=node:node . .
 
 RUN yarn build
 

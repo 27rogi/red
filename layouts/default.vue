@@ -1,15 +1,15 @@
 <template>
   <div class="app">
     <ColorScheme tag="span">
-      <div class="sidebar-container">
-        <uiSidebar />
-      </div>
-      <div class="content-container">
-        <Nuxt />
+      <div class="background" :class="{ animated: !$device.isFirefox }" />
+      <div class="content-wrapper">
+        <div class="content">
+          <uiNavbar class="mb-4" />
+          <Nuxt />
+        </div>
       </div>
     </ColorScheme>
   </div>
-
 </template>
 
 <script>
@@ -21,31 +21,39 @@ export default {
 
 <style lang="scss">
 html {
-  @apply font-body relative h-full;
+  @apply font-body h-full relative;
 }
 
 body {
-  @apply h-full text-water-600;
-}
-
-.app {
-  @apply relative flex flex-row min-h-screen bg-mariner-light-100;
-  .sidebar-container {
-    @apply flex-grow-0 flex-shrink-0 md:w-[20%] w-0 relative;
-  }
-  .content-container {
-    @apply relative overflow-hidden flex-grow-0 flex-shrink-0 md:w-[80%] w-full px-6 py-10;
-    h1 {
-      @apply mb-2 text-xl md:text-2xl xl:text-3xl 2xl:text-4xl font-semibold;
+  @apply h-full text-slate-200/90;
+  &:not(.navbar-open) {
+    .app .content-wrapper {
+      @apply backdrop-filter backdrop-blur-[62px] backdrop-saturate-150;
     }
   }
 }
 
-.dark .app {
-  @apply bg-mariner-dark-900;
-}
+.app {
+  @apply flex flex-col text-slate-200/90 relative;
+  .content-wrapper {
+    @apply min-h-screen bg-background-800/80 z-20;
+    .content {
+      @apply mx-auto flex-grow-0 flex-shrink-0 w-full max-w-screen-2xl py-10 px-6 z-20 relative overflow-hidden;
+      h1.page-title {
+        @apply font-semibold text-xl px-4 md:text-2xl xl:text-3xl 2xl:text-4xl;
+      }
+    }
+  }
 
-.dark body {
-  @apply text-mariner-dark-200;
+  .background {
+    &.animated {
+      background-image: url("@/static/bg.svg");
+      background-position-y: -8rem;
+      background-position-x: -10rem;
+      background-size: 150%;
+      background-repeat: no-repeat;
+    }
+    @apply h-full bg-background-800 w-full z-10 absolute;
+  }
 }
 </style>

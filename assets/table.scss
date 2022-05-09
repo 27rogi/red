@@ -1,50 +1,50 @@
 @import "../node_modules/vue-good-table/src/styles/style.scss";
 
 .vgt-wrap {
-  @apply bg-mariner-100 p-2 rounded-2xl;
+  @apply bg-primary-100 rounded-2xl p-2;
 
   .vgt-inner-wrap {
     @apply shadow-none;
   }
 
   .vgt-table {
-    @apply bg-mariner-light-100 rounded-2xl overflow-hidden border-none;
+    @apply border-none bg-primary-100 rounded-2xl overflow-hidden;
 
     .vgt-right-align,
     .vgt-left-align {
-      @apply text-left border-none;
+      @apply border-none text-left;
     }
 
     thead {
       th {
         background: none;
-        @apply text-water-600 font-semibold bg-mariner-100;
+        @apply font-semibold bg-primary-100 text-primary-600;
       }
     }
 
     tbody {
       @apply rounded-2xl overflow-hidden;
       tr:nth-of-type(odd) {
-        @apply bg-mariner-100;
+        @apply bg-primary-100;
       }
     }
   }
 }
 
 .dark .vgt-wrap {
-  @apply bg-water-dark-800;
+  @apply bg-background-800;
   .vgt-table {
-    @apply bg-water-dark-700;
+    @apply bg-background-700;
     td {
-      @apply text-mariner-light-400 text-opacity-80;
+      @apply text-primary-400 text-opacity-80;
     }
   }
   thead th {
-    @apply text-mariner-light-200 bg-water-dark-800;
+    @apply bg-background-800 text-primary-200;
   }
   tbody {
     tr:nth-of-type(odd) {
-      @apply bg-water-dark-800;
+      @apply bg-background-800;
     }
   }
 }

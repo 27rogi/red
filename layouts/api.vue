@@ -4,15 +4,14 @@
       <Nuxt />
     </ColorScheme>
   </div>
-
 </template>
 
 <style lang="scss">
 html {
-  @apply font-body relative h-full;
+  @apply font-body h-full relative;
 }
 
 body {
-  @apply h-full bg-transparent text-water-600;
+  @apply bg-transparent h-full text-primary-600;
 }
 </style>

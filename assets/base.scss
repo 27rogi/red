@@ -1,20 +1,20 @@
-@import 'vue2-datepicker/index.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-* {
-  @apply transition-colors duration-75 ease-in;
-}
+@import "vue2-datepicker/index.css";
 
 .button {
-  @apply text-center text-water-dark-300 bg-mariner-200 px-4 py-1 rounded-2xl font-medium;
+  @apply font-medium bg-background-200/30 rounded-2xl text-center py-1 px-4 text-primary-50;
 
   &:hover {
-    @apply bg-mariner-light-200;
+    @apply bg-background-200/50;
   }
 
   &__primary {
-    @apply bg-mariner-light-600 text-white;
+    @apply bg-primary-600 text-white;
     &:hover {
-      @apply bg-mariner-light-500;
+      @apply bg-primary-500;
     }
   }
   &__danger {
@@ -29,66 +29,50 @@
   }
 }
 
-.dark .button {
-  @apply bg-mariner-dark-700 text-mariner-light-200;
-
-  &:hover {
-    @apply bg-mariner-dark-600;
-  }
-
-  &__primary {
-    @apply bg-mariner-dark-300 text-white;
-    &:hover {
-      @apply bg-mariner-dark-100;
-    }
-  }
-  &__danger {
-    @apply bg-red-500 text-white;
-    &:hover {
-      @apply bg-red-400;
-    }
-  }
-}
-
-input, .editor--input, .add--input, .mx-input, textarea {
-  @apply text-base font-medium text-mariner-dark-700 p-2 px-4 w-full border-none bg-mariner-100 rounded-2xl shadow-none;
+input,
+.editor--input,
+.add--input,
+.mx-input,
+textarea {
+  @apply border-none font-medium bg-primary-100 rounded-2xl shadow-none text-base w-full p-2 px-4 text-background-700;
   &::placeholder {
-    @apply text-mariner-dark-300 text-opacity-50;
+    @apply text-background-300 text-opacity-50;
   }
 }
 
 .mx-input-wrapper .mx-icon-calendar {
-  @apply text-mariner-dark-300 text-opacity-50 fill-current;
+  @apply fill-current text-background-300 text-opacity-50;
 }
 
 .multiselect {
   @apply font-medium;
 
   .multiselect__placeholder {
-    @apply m-0 p-0 text-base text-mariner-dark-300 text-opacity-50;
+    @apply m-0 text-base p-0 text-background-300 text-opacity-50;
   }
 
   .multiselect__tags {
-    @apply px-4 rounded-2xl;
+    @apply rounded-2xl px-4;
   }
 
   .multiselect__content-wrapper {
     @apply rounded-b-2xl;
   }
 
-  .multiselect__tags, .multiselect__content-wrapper {
-    @apply font-medium text-mariner-dark-700 border-none bg-mariner-100 shadow-none;
+  .multiselect__tags,
+  .multiselect__content-wrapper {
+    @apply border-none font-medium bg-primary-100 shadow-none text-background-700;
   }
 
   .multiselect__option--highlight {
-    @apply bg-mariner-dark-100 bg-opacity-10 text-mariner-dark-300;
+    @apply bg-background-100 bg-opacity-10 text-background-300;
   }
 
   .multiselect__option--selected {
-    @apply bg-mariner-dark-100 bg-opacity-20 text-mariner-dark-300;
+    @apply bg-background-100 bg-opacity-20 text-background-300;
 
     &.multiselect__option--highlight {
-      @apply bg-mariner-dark-100 bg-opacity-20 text-mariner-dark-300;
+      @apply bg-background-100 bg-opacity-20 text-background-300;
     }
   }
 
@@ -99,81 +83,83 @@ input, .editor--input, .add--input, .mx-input, textarea {
   .multiselect__input,
   .multiselect__single {
     line-height: inherit;
-    @apply mx-0 px-0 bg-transparent text-mariner-dark-700;
+    @apply bg-transparent mx-0 px-0 text-background-700;
     &::placeholder {
-      @apply text-mariner-dark-300 text-opacity-50;
+      @apply text-background-300 text-opacity-50;
     }
   }
-
 }
 
 .dark {
-  input, .editor--input, .mx-input, textarea {
-    @apply text-mariner-200 bg-mariner-dark-800;
+  input,
+  .editor--input,
+  .mx-input,
+  textarea {
+    @apply bg-background-800 text-primary-200;
     &::placeholder {
-      @apply text-mariner-dark-100 text-opacity-70;
+      @apply text-background-100 text-opacity-70;
     }
   }
 
   .mx-input-wrapper .mx-icon-calendar {
-    @apply text-mariner-dark-100 text-opacity-70 fill-current;
+    @apply fill-current text-background-100 text-opacity-70;
   }
 
   .multiselect {
-
     .multiselect__placeholder {
-      @apply text-mariner-dark-100 text-opacity-70;
+      @apply text-background-100 text-opacity-70;
     }
 
-    .multiselect__tags, .multiselect__content-wrapper {
-      @apply text-mariner-200 bg-mariner-dark-800;
+    .multiselect__tags,
+    .multiselect__content-wrapper {
+      @apply bg-background-800 text-primary-200;
     }
 
     .multiselect__option--highlight {
-      @apply bg-mariner-dark-100 bg-opacity-10 text-mariner-dark-300;
+      @apply bg-background-100 bg-opacity-10 text-background-300;
     }
 
     .multiselect__option--selected {
-      @apply bg-mariner-dark-100 bg-opacity-20 text-mariner-dark-300;
+      @apply bg-background-100 bg-opacity-20 text-background-300;
 
       &.multiselect__option--highlight {
-        @apply bg-mariner-dark-100 bg-opacity-20 text-mariner-dark-300;
+        @apply bg-background-100 bg-opacity-20 text-background-300;
       }
     }
 
     .multiselect__input,
     .multiselect__single {
-      @apply bg-transparent text-mariner-200;
+      @apply bg-transparent text-primary-200;
       &::placeholder {
-        @apply text-mariner-dark-300 text-opacity-50;
+        @apply text-background-300 text-opacity-50;
       }
     }
   }
 }
 
 .toasted.toasted-primary {
-  @apply py-2 px-4 font-medium shadow-none rounded-2xl bg-water-600 text-water-50 #{!important};
+  @apply font-medium bg-primary-600 rounded-2xl shadow-none py-2 px-4 text-primary-50 #{!important};
   &.success {
     @apply bg-green-500 #{!important};
   }
 }
 
 .dark .toasted.toasted-primary {
-  @apply bg-water-dark-600 text-water-50 #{!important};
+  @apply bg-background-600 text-primary-50 #{!important};
   &.success {
     @apply bg-green-500 #{!important};
   }
 }
 
 .mx-datepicker-main {
-  @apply bg-mariner-light-100 border-none rounded-2xl #{!important};
+  @apply border-none bg-primary-100 rounded-2xl #{!important};
   &.mx-datepicker-popup {
     @apply shadow-2xl #{!important};
   }
 }
 
 .dark .mx-datepicker-main {
-  @apply bg-mariner-dark-800 border-none rounded-2xl #{!important};
+  @apply border-none bg-background-800 rounded-2xl #{!important};
   &.mx-datepicker-popup {
     @apply shadow-2xl #{!important};
   }
@@ -183,9 +169,11 @@ input, .editor--input, .add--input, .mx-input, textarea {
   @apply h-auto;
 }
 
-.fade-enter-active, .fade-leave-active {
-  @apply transition-all duration-100 ease-in;
+.fade-enter-active,
+.fade-leave-active {
+  @apply transition-all ease-in duration-100;
 }
-.fade-enter, .fade-leave-to {
-  @apply transform-gpu -translate-y-1 opacity-0;
+.fade-enter,
+.fade-leave-to {
+  @apply opacity-0 transform-gpu -translate-y-1;
 }
